@@ -1,0 +1,2320 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ПОЧТОВОЕ ОТДЕЛЕНИЕ</title>
+<meta name="description" content="Почтовое отделение: семь писем, хроника и один подарок.">
+<meta name="theme-color" content="#333333">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CASSETTE FUTURISM — токены
+   ============================================================ */
+:root{
+  --green:#33FF00;      /* CRT phosphor */
+  --beige:#D2B48C;      /* тёплый беж */
+  --charcoal:#333333;   /* основной фон */
+  --amber:#FFB000;      /* фосфор-янтарь */
+  --red:#CC0000;        /* лента */
+  --grey:#999999;       /* статик-серый */
+  --navy:#1B2838;       /* глубокий синий */
+  --offwhite:#E8E0D0;
+  --ink:#1a1a1a;        /* off-black, не чистый чёрный */
+
+  --panel:#2c2c2c;
+  --panel-hi:#3a3a3a;
+  --line:#4c4c4c;
+
+  --f-vt:"VT323","Courier New",monospace;
+  --f-mono:"JetBrains Mono","Consolas","Courier New",monospace;
+
+  --r:8px;
+  --step:4px;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --maxw:1280px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  margin:0;
+  background:var(--charcoal);
+  background-image:radial-gradient(120% 90% at 50% 0%, #3d3d3d 0%, var(--charcoal) 42%, var(--navy) 100%);
+  background-attachment:fixed;
+  color:var(--beige);
+  font-family:var(--f-vt);
+  font-size:1.25rem;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{ margin:0; font-weight:400; line-height:1.05; letter-spacing:.02em; }
+p{ margin:0; }
+button{ font:inherit; color:inherit; }
+a{ color:var(--green); }
+::selection{ background:var(--green); color:var(--ink); }
+
+:focus-visible{
+  outline:2px solid var(--amber);
+  outline-offset:3px;
+  border-radius:var(--r);
+}
+
+.mono{ font-family:var(--f-mono); font-size:.875rem; letter-spacing:.02em; }
+
+/* ============================================================
+   CRT / VHS оверлеи
+   ============================================================ */
+.crt{
+  position:fixed; inset:0; z-index:200; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.30) 0 1px, transparent 1px 3px);
+  mix-blend-mode:multiply; opacity:.5;
+  animation:flicker 6s steps(1,end) infinite;
+}
+.crt::after{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(115% 100% at 50% 50%, transparent 52%, rgba(0,0,0,.55) 100%);
+}
+@keyframes flicker{
+  0%,96%,100%{ opacity:.5 }
+  97%{ opacity:.44 } 98%{ opacity:.56 } 99%{ opacity:.48 }
+}
+.vhs{
+  position:fixed; inset:0; z-index:199; pointer-events:none; overflow:hidden;
+}
+.vhs::before{
+  content:''; position:absolute; left:-4%; right:-4%; height:130px; top:-20%;
+  background:linear-gradient(180deg, transparent, rgba(232,224,208,.05) 42%, rgba(51,255,0,.055) 62%, transparent);
+  filter:blur(1.5px);
+  animation:track 9s linear infinite;
+}
+@keyframes track{ from{ top:-20% } to{ top:110% } }
+.vhs::after{
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 2px, transparent 2px 5px);
+  opacity:.5;
+}
+.glitch{ animation:glitch .28s steps(2,end) 2; }
+@keyframes glitch{
+  0%{ transform:translate(0,0) }
+  25%{ transform:translate(-3px,1px); filter:hue-rotate(25deg) }
+  50%{ transform:translate(3px,-1px) }
+  75%{ transform:translate(-2px,0) }
+  100%{ transform:translate(0,0) }
+}
+
+/* ============================================================
+   ПАНЕЛИ И КНОПКИ
+   ============================================================ */
+.panel{
+  background:var(--panel);
+  border:2px solid var(--line);
+  border-radius:var(--r);
+  box-shadow:0 2px 12px rgba(0,0,0,.35), 4px 4px 0 rgba(0,0,0,.4);
+}
+.panel--live{ border-color:var(--green); }
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:.6rem;
+  padding:.7rem 1.5rem;
+  border-radius:var(--r);
+  border:2px solid var(--ink);
+  font-family:var(--f-vt); font-size:1.35rem; line-height:1;
+  letter-spacing:.06em; text-transform:uppercase;
+  cursor:pointer;
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
+}
+.btn--primary{
+  background:var(--green); color:var(--ink);
+  box-shadow:0 4px 0 var(--ink);
+  text-shadow:none;
+}
+.btn--primary:hover{ background:#2ce000; transform:translateY(-2px); box-shadow:0 6px 0 var(--ink); }
+.btn--primary:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--ink); }
+.btn--ghost{
+  background:transparent; color:var(--green);
+  border-color:var(--green);
+  box-shadow:0 4px 0 rgba(0,0,0,.45);
+}
+.btn--ghost:hover{ background:rgba(51,255,0,.1); transform:translateY(-2px); }
+.btn--ghost:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.45); }
+.btn--amber{ background:var(--amber); color:var(--ink); box-shadow:0 4px 0 var(--ink); }
+.btn--amber:hover{ background:#ffb933; transform:translateY(-2px); box-shadow:0 6px 0 var(--ink); }
+.btn--amber:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--ink); }
+.btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+
+/* ============================================================
+   LED / ИНДИКАТОРЫ
+   ============================================================ */
+.led{
+  width:10px; height:10px; border-radius:50%;
+  background:#4a4a4a; border:1px solid rgba(0,0,0,.6);
+  display:inline-block; flex:none;
+}
+.led--on{ background:var(--amber); box-shadow:0 0 8px rgba(255,176,0,.9); }
+.led--green{ background:var(--green); box-shadow:0 0 8px rgba(51,255,0,.9); }
+.led--red{ background:var(--red); box-shadow:0 0 8px rgba(204,0,0,.9); }
+.led--blink{ animation:blink 1.1s steps(2,end) infinite; }
+@keyframes blink{ 50%{ opacity:.25 } }
+
+.glow{ text-shadow:0 0 7px rgba(51,255,0,.65), 0 0 22px rgba(51,255,0,.22); }
+.glow-amber{ text-shadow:0 0 7px rgba(255,176,0,.7), 0 0 22px rgba(255,176,0,.25); }
+.glow-red{ text-shadow:0 0 7px rgba(204,0,0,.75); }
+
+/* точечный матричный дисплей */
+.matrix{
+  display:inline-block;
+  background:#101c10; color:var(--green);
+  padding:.45rem .8rem; border-radius:6px;
+  border:2px solid #23301f;
+  font-family:var(--f-mono); font-size:.8rem; letter-spacing:.22em;
+  text-shadow:0 0 9px rgba(51,255,0,.75);
+  background-image:radial-gradient(rgba(51,255,0,.13) 1px, transparent 1px);
+  background-size:3px 3px;
+}
+
+/* ============================================================
+   ШАПКА / СТАТУС
+   ============================================================ */
+.hud{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:linear-gradient(180deg, rgba(26,26,26,.97), rgba(26,26,26,.82));
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  border-bottom:2px solid var(--line);
+}
+.hud__in{
+  max-width:var(--maxw); margin:0 auto; padding:.5rem 1.5rem;
+  display:flex; align-items:center; gap:1rem; justify-content:space-between;
+}
+.hud__brand{
+  display:flex; align-items:center; gap:.6rem;
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.18em; color:var(--grey);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.hud__leds{ display:flex; align-items:center; gap:.7rem; flex:none; }
+.hud__prog{ display:flex; gap:4px; flex:none; }
+.hud__seg{ width:16px; height:6px; background:#4a4a4a; border-radius:1px; transition:background .4s var(--ease); }
+.hud__seg.is-on{ background:var(--green); box-shadow:0 0 8px rgba(51,255,0,.8); }
+
+/* ============================================================
+   ЭКРАН 1 — ТЕРМИНАЛ / ЗАГРУЗКА
+   ============================================================ */
+.boot{
+  min-height:100dvh;
+  display:flex; align-items:center; justify-content:center;
+  padding:5rem 1.5rem 3rem;
+  position:relative;
+}
+.boot__unit{
+  width:100%; max-width:900px;
+  background:var(--panel);
+  border:2px solid var(--line); border-radius:var(--r);
+  box-shadow:0 2px 12px rgba(0,0,0,.4), 6px 6px 0 rgba(0,0,0,.45);
+  padding:1.25rem;
+  position:relative;
+}
+.boot__bar{
+  display:flex; align-items:center; gap:.75rem; justify-content:space-between;
+  border-bottom:2px solid var(--line); padding-bottom:.6rem; margin-bottom:1rem;
+}
+.boot__body{ padding:.5rem 0 1.25rem; min-height:290px; }
+.term-line{
+  font-family:var(--f-mono); font-size:.78rem; line-height:1.9;
+  color:var(--grey); letter-spacing:.03em;
+  display:flex; gap:.6rem;
+}
+.term-line b{ color:var(--green); font-weight:500; flex:none; }
+.term-line.is-ok b{ color:var(--green); }
+.term-line.is-warn b{ color:var(--amber); }
+.term-line.is-err b{ color:var(--red); }
+.caret{
+  display:inline-block; width:.6ch; height:1em; vertical-align:-.15em;
+  background:var(--green); animation:blink 1s steps(2,end) infinite;
+}
+.boot__hero{
+  margin-top:1.25rem; padding-top:1.25rem; border-top:2px dashed var(--line);
+  text-align:center;
+}
+.boot__for{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.34em; color:var(--grey); }
+.boot__name{
+  font-size:clamp(2.6rem,8vw,5rem); color:var(--green);
+  margin:.35rem 0 .1rem; line-height:1;
+}
+.boot__reason{ font-size:1.35rem; color:var(--beige); }
+.boot__actions{ margin-top:1.6rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+
+/* ============================================================
+   ЭКРАН 2 — КОНВЕРТ / ЛЕНТА
+   ============================================================ */
+.deck{
+  min-height:100dvh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1.75rem; padding:6rem 1.5rem 3rem;
+}
+.deck__label{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.3em; color:var(--grey);
+  display:flex; align-items:center; gap:.6rem;
+}
+.deck__reels{ display:flex; align-items:center; gap:1.25rem; }
+.reel{
+  width:72px; aspect-ratio:1; border-radius:50%; position:relative; flex:none;
+  background:radial-gradient(circle at 50% 50%, #3f3f3f 0 28%, #242424 29% 100%);
+  border:2px solid #555;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.7);
+}
+.reel__spokes{
+  position:absolute; inset:16%; border-radius:50%;
+  background:repeating-conic-gradient(from 0deg, #6a6a6a 0 10deg, transparent 10deg 45deg);
+  animation:spin 2.6s linear infinite;
+}
+.reel__hub{
+  position:absolute; left:50%; top:50%; width:11px; height:11px; margin:-5.5px;
+  border-radius:50%; background:var(--green); box-shadow:0 0 9px var(--green);
+}
+.reel--right .reel__spokes{ animation-direction:reverse; }
+@keyframes spin{ to{ transform:rotate(360deg) } }
+
+/* конверт */
+.env{
+  position:relative; width:min(420px,86vw); aspect-ratio:5/3.5;
+  cursor:pointer; border:none; background:transparent; padding:0;
+  perspective:900px;
+}
+.env__back{
+  position:absolute; inset:0; background:#3c3c3c; border:2px solid var(--green); border-radius:6px;
+}
+.env__flap{
+  position:absolute; inset:0 0 auto 0; height:50%;
+  background:var(--beige); border-bottom:2px solid var(--green);
+  clip-path:polygon(0 0, 100% 0, 50% 100%);
+  transform-origin:top center; transform:rotateX(0);
+  transition:transform .85s var(--spring), opacity .3s ease .7s;
+}
+.env.is-open .env__flap{ transform:rotateX(180deg); opacity:0; }
+.env__sheet{
+  position:absolute; left:11%; right:11%; bottom:5%; height:58%;
+  background:var(--offwhite); border:2px solid var(--ink); border-radius:4px;
+  transform:translateY(0);
+  transition:transform .8s var(--spring) .25s;
+}
+.env.is-open .env__sheet{ transform:translateY(-46%); }
+.env__front{
+  position:absolute; inset:0; background:#3c3c3c;
+  border:2px solid var(--green); border-radius:6px;
+  clip-path:polygon(0% 0%, 50% 42%, 100% 0%, 100% 100%, 0% 100%);
+}
+.env__front::before,
+.env__front::after{
+  content:''; position:absolute; top:0; height:2px; width:59%; background:var(--green); opacity:.55;
+}
+.env__front::before{ left:0; transform-origin:0 50%; transform:rotate(30deg); }
+.env__front::after{ right:0; transform-origin:100% 50%; transform:rotate(-30deg); }
+.env__stamp{
+  position:absolute; right:8%; bottom:8%; z-index:5;
+  font-family:var(--f-mono); font-size:.6rem; letter-spacing:.16em;
+  color:var(--red); border:2px solid var(--red); padding:.15rem .35rem; border-radius:3px;
+  transform:rotate(-8deg);
+  transition:opacity .4s ease .35s;
+}
+.env__tag{
+  position:absolute; left:8%; bottom:8%; z-index:5;
+  font-family:var(--f-mono); font-size:.62rem; letter-spacing:.18em; color:var(--green);
+  transition:opacity .4s ease .35s;
+}
+.env.is-open .env__stamp,
+.env.is-open .env__tag{ opacity:0; }
+.env__flights{ position:absolute; inset:0; z-index:3; pointer-events:none; }
+.fly{
+  position:absolute; left:50%; top:60%; width:66px; height:46px; margin-left:-33px;
+  background:var(--offwhite); border:2px solid var(--ink); border-radius:3px; opacity:0;
+}
+.fly::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom right, transparent 49%, var(--green) 49% 52%, transparent 52%);
+  opacity:.5;
+}
+.env.is-open .fly{
+  animation:flyOut 1.1s cubic-bezier(.2,.75,.3,1) forwards;
+  animation-delay:calc(var(--i) * 90ms + 120ms);
+}
+@keyframes flyOut{
+  0%{ opacity:0; transform:translate(0,0) rotate(0) scale(.6); }
+  15%{ opacity:1; }
+  100%{ opacity:0; transform:translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1); }
+}
+.deck__hint{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.2em; color:var(--grey); }
+
+/* VU-метр */
+.vu{
+  width:130px; height:58px; position:relative; overflow:hidden; flex:none;
+  background:#151515; border:2px solid #555; border-radius:6px;
+}
+.vu::before{
+  content:''; position:absolute; left:10px; right:10px; top:9px; bottom:14px;
+  background:conic-gradient(from 210deg at 50% 100%,
+    var(--green) 0 38%, var(--amber) 38% 58%, var(--red) 58% 76%, transparent 76%);
+  -webkit-mask:radial-gradient(circle at 50% 100%, transparent 0 58%, #000 60% 100%);
+  mask:radial-gradient(circle at 50% 100%, transparent 0 58%, #000 60% 100%);
+  opacity:.9;
+}
+.vu__needle{
+  position:absolute; left:50%; bottom:12px; width:2px; height:34px;
+  background:var(--offwhite); transform-origin:50% 100%;
+  box-shadow:0 0 6px rgba(232,224,208,.8);
+  animation:needle 2.4s ease-in-out infinite alternate;
+}
+@keyframes needle{ from{ transform:rotate(-40deg) } to{ transform:rotate(36deg) } }
+
+/* ============================================================
+   СЕКЦИИ
+   ============================================================ */
+.section{
+  max-width:var(--maxw); margin:0 auto;
+  padding:clamp(4rem,8vw,7rem) 1.5rem;
+}
+.sec-head{ margin-bottom:clamp(2.5rem,5vw,4rem); }
+.sec-head h2{ font-size:clamp(1.9rem,4.4vw,2.8rem); color:var(--green); margin-top:.35rem; }
+.sec-head .kicker{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.3em; color:var(--amber);
+  display:flex; align-items:center; gap:.6rem;
+}
+.sec-head .kicker::before{
+  content:''; width:26px; height:2px; background:var(--amber);
+}
+.sec-note{ margin-top:.9rem; color:var(--grey); font-family:var(--f-mono); font-size:.78rem; max-width:60ch; }
+
+.reveal{ opacity:0; transform:translateY(16px); transition:opacity .48s ease-out, transform .48s ease-out; }
+.reveal.is-in{ opacity:1; transform:none; }
+
+/* ============================================================
+   ПИСЬМА — асимметричная сетка
+   ============================================================ */
+.tracks{
+  display:grid; grid-template-columns:repeat(12,1fr); gap:1.25rem;
+}
+.track{
+  grid-column:span var(--span,6);
+  overflow:hidden; position:relative;
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
+}
+.track:hover{ transform:scale(1.03); box-shadow:0 10px 28px rgba(0,0,0,.45), 6px 6px 0 rgba(0,0,0,.5); }
+.track.is-open{ border-color:var(--green); }
+.track__btn{
+  display:block; width:100%; text-align:left; cursor:pointer;
+  background:transparent; border:none; padding:1.1rem 1.25rem;
+  position:relative;
+}
+.track__top{
+  display:flex; align-items:center; gap:.6rem; justify-content:space-between;
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.2em; color:var(--grey);
+}
+.track__cat{
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ink); background:var(--green); padding:.1rem .4rem; border-radius:3px;
+}
+.track__name{
+  display:block;
+  font-size:clamp(1.6rem,3.6vw,2.2rem); color:var(--beige); margin-top:.55rem; line-height:1.05;
+}
+.track__hint{
+  margin-top:.85rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.2em; color:var(--grey);
+  display:flex; align-items:center; gap:.5rem;
+}
+.track__hint .led{ width:7px; height:7px; }
+.track__body{
+  display:grid; grid-template-rows:0fr;
+  transition:grid-template-rows .5s var(--ease);
+}
+.track.is-open .track__body{ grid-template-rows:1fr; }
+.track__inner{ overflow:hidden; }
+.track__text{
+  padding:0 1.25rem 1rem;
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.75; color:var(--offwhite);
+  max-width:72ch;
+}
+.track__sign{
+  display:block; padding:0 1.25rem 1.15rem;
+  font-family:var(--f-mono); font-size:.7rem; letter-spacing:.14em; color:var(--amber);
+}
+.track__strip{
+  height:16px; margin:0 1.25rem 1.25rem;
+  border-top:2px solid var(--line); border-bottom:2px solid var(--line);
+  background-image:repeating-linear-gradient(90deg, transparent 0 10px, rgba(0,0,0,.45) 10px 18px, transparent 18px 28px);
+  background-size:28px 4px; background-repeat:repeat-x; background-position:center;
+  opacity:.75;
+}
+
+/* ============================================================
+   ЗАШИФРОВАННЫЕ ПИСЬМА
+   ============================================================ */
+.cipher{ padding:0 1.25rem 1.25rem; }
+.cipher__how{
+  display:flex; gap:.7rem; align-items:flex-start;
+  background:rgba(255,176,0,.07);
+  border:2px solid rgba(255,176,0,.45); border-radius:6px;
+  padding:.7rem .85rem;
+}
+.cipher__how-title{ font-family:var(--f-mono); font-size:.64rem; letter-spacing:.22em; color:var(--amber); }
+.cipher__how-text{ font-family:var(--f-mono); font-size:.78rem; line-height:1.65; color:var(--beige); margin-top:.3rem; }
+.cipher__data{
+  margin:.9rem 0 0;
+  background:#141414; border:2px dashed var(--green); border-radius:6px;
+  padding:.9rem 1rem; color:var(--green);
+  font-family:var(--f-mono); font-size:.85rem; line-height:1.95;
+  white-space:pre-wrap; word-break:break-word;
+  text-shadow:0 0 9px rgba(51,255,0,.5);
+}
+.cipher__form{ display:flex; gap:.6rem; margin-top:.9rem; flex-wrap:wrap; }
+.cipher__input{
+  flex:1 1 200px; min-width:0;
+  background:#141414; border:2px solid var(--line); border-radius:6px;
+  color:var(--green); font-family:var(--f-mono); font-size:.85rem;
+  padding:.65rem .8rem;
+}
+.cipher__input::placeholder{ color:#5f5f5f; }
+.cipher__input:focus{ outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(51,255,0,.18); }
+.cipher__input:disabled{ opacity:.5; }
+.cipher__msg{ margin-top:.7rem; font-family:var(--f-mono); font-size:.76rem; color:var(--grey); min-height:1.3em; }
+.cipher__msg.is-err{ color:var(--red); }
+.cipher__msg.is-ok{ color:var(--green); }
+.cipher__links{ display:flex; gap:1.2rem; margin-top:.5rem; flex-wrap:wrap; }
+.cipher__link{
+  background:none; border:none; padding:0; cursor:pointer;
+  font-family:var(--f-mono); font-size:.7rem; letter-spacing:.16em; color:var(--grey);
+  border-bottom:1px dotted currentColor;
+  transition:color .2s var(--ease);
+}
+.cipher__link:hover{ color:var(--amber); }
+.cipher__link.is-hot{ color:var(--red); }
+.cipher__hint{ margin-top:.7rem; font-family:var(--f-mono); font-size:.75rem; line-height:1.6; color:var(--amber); }
+.cipher__solution{ display:none; }
+.cipher__solution .track__text{ padding:0; }
+.cipher__solution .track__sign{ padding:0; display:block; }
+.track.is-decoded .cipher__box{ display:none; }
+.track.is-decoded .cipher__solution{ display:block; }
+.track.is-decoded{ border-color:var(--green); }
+.shake{ animation:shake .4s ease; }
+@keyframes shake{
+  0%,100%{ transform:translateX(0) }
+  20%{ transform:translateX(-7px) } 40%{ transform:translateX(7px) }
+  60%{ transform:translateX(-4px) } 80%{ transform:translateX(4px) }
+}
+.lock-ico{ display:inline-flex; vertical-align:-3px; margin-right:.35rem; }
+
+/* ============================================================
+   ХРОНИКА — лента
+   ============================================================ */
+.tape{
+  position:relative; border:2px solid var(--line); border-radius:var(--r);
+  background:linear-gradient(180deg, #2b2b2b, #242424);
+  padding:2.4rem 1.25rem 1.6rem; overflow:hidden;
+}
+.tape::before{
+  content:''; position:absolute; inset:0 0 auto 0; height:16px;
+  background-image:repeating-linear-gradient(90deg, transparent 0 8px, rgba(0,0,0,.55) 8px 16px, transparent 16px 24px);
+  background-size:24px 8px; background-repeat:repeat-x; opacity:.9;
+}
+.tape::after{
+  content:''; position:absolute; inset:auto 0 0 0; height:16px;
+  background-image:repeating-linear-gradient(90deg, transparent 0 8px, rgba(0,0,0,.55) 8px 16px, transparent 16px 24px);
+  background-size:24px 8px; background-repeat:repeat-x; opacity:.9;
+}
+.tl{ list-style:none; margin:0; padding:0; display:grid; gap:1.1rem; }
+.tl__item{
+  display:grid; grid-template-columns:120px 1fr; gap:1.25rem; align-items:start;
+  background:var(--panel); border:2px solid var(--line); border-radius:6px;
+  padding:.9rem 1rem;
+  transition:border-color .25s var(--ease), transform .25s var(--ease);
+}
+.tl__item:hover{ border-color:var(--green); transform:translateX(4px); }
+.tl__date{
+  font-family:var(--f-mono); font-size:.7rem; letter-spacing:.16em; color:var(--amber);
+  padding-top:.25rem;
+}
+.tl__text{ font-size:1.25rem; color:var(--beige); line-height:1.45; }
+.tl__photo{
+  margin-top:.7rem; height:130px; max-width:260px;
+  border:2px solid var(--line); border-radius:4px;
+  background:linear-gradient(135deg,#2f2f2f,#232323);
+  background-size:cover; background-position:center;
+  display:grid; place-items:center;
+}
+.tl__photo .ph-cap{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; color:var(--grey); text-align:center; padding:0 .75rem; }
+.tl__photo.has-photo .ph-cap{ display:none; }
+
+/* ============================================================
+   ВИКТОРИНА — терминал
+   ============================================================ */
+.term{
+  background:#1f1f1f; border:2px solid var(--line); border-radius:var(--r);
+  box-shadow:0 2px 12px rgba(0,0,0,.4), 5px 5px 0 rgba(0,0,0,.45);
+  overflow:hidden;
+}
+.term__bar{
+  display:flex; align-items:center; gap:.7rem; justify-content:space-between;
+  padding:.55rem .9rem; border-bottom:2px solid var(--line); background:#262626;
+  font-family:var(--f-mono); font-size:.68rem; letter-spacing:.18em; color:var(--grey);
+}
+.term__body{ padding:1.35rem; }
+.term__q{ font-size:clamp(1.5rem,3.4vw,2.1rem); color:var(--green); line-height:1.15; }
+.term__opts{ margin-top:1.25rem; display:grid; gap:.6rem; }
+.opt{
+  display:flex; align-items:center; gap:.8rem; width:100%; text-align:left;
+  background:#282828; border:2px solid #434343; border-radius:6px;
+  padding:.65rem .9rem; cursor:pointer;
+  font-size:1.2rem; color:var(--beige);
+  transition:transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
+}
+.opt:hover:not(:disabled){ transform:translateX(4px); border-color:var(--green); background:#2e2e2e; }
+.opt:disabled{ cursor:default; }
+.opt__k{
+  flex:none; width:26px; height:26px; display:grid; place-items:center;
+  border:2px solid var(--grey); border-radius:4px;
+  font-family:var(--f-mono); font-size:.72rem; color:var(--grey);
+}
+.opt.is-right{ border-color:var(--green); background:#223a12; }
+.opt.is-right .opt__k{ border-color:var(--green); color:var(--green); }
+.opt.is-wrong{ border-color:var(--red); background:#3a1414; }
+.opt.is-wrong .opt__k{ border-color:var(--red); color:var(--red); }
+.opt.is-dim{ opacity:.4; }
+.term__fb{
+  margin-top:1rem; font-family:var(--f-mono); font-size:.8rem; min-height:1.6em; color:var(--grey);
+}
+.term__fb.is-ok{ color:var(--green); }
+.term__fb.is-no{ color:var(--red); }
+.term__foot{ margin-top:1.1rem; display:flex; justify-content:flex-end; gap:.75rem; }
+.term__score{ text-align:center; padding:1.5rem 0; }
+.term__score .big{
+  font-family:var(--f-mono); font-size:clamp(2.6rem,9vw,4.5rem); font-weight:700; color:var(--amber);
+  text-shadow:0 0 14px rgba(255,176,0,.7); line-height:1;
+}
+.term__score p{ margin-top:.9rem; color:var(--beige); font-size:1.3rem; }
+.term__acts{ margin-top:1.75rem; display:flex; justify-content:center; gap:.75rem; flex-wrap:wrap; }
+
+/* ============================================================
+   ФИНАЛ — кассета с купоном
+   ============================================================ */
+.finale{ text-align:center; }
+.finale .sec-head{ max-width:44ch; margin-left:auto; margin-right:auto; }
+.cass{
+  position:relative; width:min(400px,88vw); aspect-ratio:1.55;
+  margin:0 auto 4rem; cursor:pointer; border:none; background:transparent; padding:0;
+}
+.cass__body{
+  position:absolute; inset:0; border-radius:8px;
+  background:linear-gradient(180deg,#3f3f3f,#2c2c2c);
+  border:2px solid var(--green);
+  box-shadow:0 10px 30px rgba(0,0,0,.5), 6px 6px 0 rgba(0,0,0,.5);
+  transition:transform .2s var(--ease);
+}
+.cass:hover .cass__body{ transform:scale(1.03); }
+.cass__label{
+  position:absolute; left:8%; right:8%; top:12%; height:34%;
+  background:var(--offwhite); border:2px solid var(--ink); border-radius:3px;
+  display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.2em; color:var(--ink);
+  text-align:center; padding:0 .5rem;
+}
+.cass__win{
+  position:absolute; left:50%; bottom:14%; transform:translateX(-50%);
+  width:74%; height:30%; border-radius:6px;
+  background:#1c1c1c; border:2px solid #4a4a4a;
+  display:flex; align-items:center; justify-content:space-around;
+}
+.cass__reel{
+  width:44px; height:44px; border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,#3a3a3a 0 26%,#1c1c1c 27% 100%);
+  border:2px solid #5a5a5a; position:relative;
+}
+.cass__reel::after{
+  content:''; position:absolute; inset:26%; border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,#6a6a6a 0 14deg, transparent 14deg 45deg);
+  animation:spin 3s linear infinite;
+}
+.cass.is-open .cass__reel::after{ animation-duration:1.1s; }
+.ticket{
+  position:absolute; left:50%; bottom:8%; transform:translate(-50%,0);
+  width:86%; z-index:6;
+  background:var(--offwhite); color:var(--ink);
+  border:2px solid var(--ink); border-radius:6px;
+  box-shadow:0 12px 30px rgba(0,0,0,.55);
+  padding:1.4rem 1.25rem; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:.15rem;
+  transition:transform .9s var(--spring) .3s;
+}
+.cass.is-open .ticket{ transform:translate(-50%,-82%); }
+.ticket__title{ display:block; font-size:clamp(1.6rem,4vw,2.3rem); color:var(--ink); }
+.ticket__text{ display:block; margin-top:.5rem; font-family:var(--f-mono); font-size:.82rem; line-height:1.7; color:#3a3a3a; }
+.ticket__date{
+  display:inline-block; align-self:center; margin-top:.9rem;
+  font-family:var(--f-mono); font-size:.72rem;
+  letter-spacing:.18em; border:2px dashed var(--red); color:var(--red);
+  padding:.3rem .6rem; border-radius:4px;
+}
+.ticket__code{ display:block; margin-top:.8rem; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.24em; color:#777; }
+.sign{
+  margin-top:2.5rem; font-size:1.3rem; color:var(--beige);
+}
+.sign b{ color:var(--green); font-weight:400; }
+
+/* ============================================================
+   ПОДВАЛ
+   ============================================================ */
+.foot{
+  border-top:2px solid var(--line); margin-top:2rem;
+  background:rgba(20,20,20,.5);
+}
+.foot__in{
+  max-width:var(--maxw); margin:0 auto; padding:1.5rem;
+  display:flex; gap:1rem; justify-content:space-between; flex-wrap:wrap;
+  font-family:var(--f-mono); font-size:.7rem; letter-spacing:.14em; color:var(--grey);
+}
+.music{
+  position:fixed; right:1rem; bottom:1rem; z-index:150;
+  width:44px; height:44px; border-radius:8px;
+  background:var(--charcoal); color:var(--green);
+  border:2px solid var(--green); cursor:pointer;
+  display:grid; place-items:center; font-family:var(--f-mono); font-size:.8rem;
+  box-shadow:0 4px 0 rgba(0,0,0,.5);
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);
+}
+.music:hover{ transform:translateY(-2px); }
+.music:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.5); }
+.music.is-off{ color:var(--grey); border-color:var(--grey); }
+
+#confetti{
+  position:fixed; inset:0; width:100vw; height:100vh;
+  z-index:95; pointer-events:none;
+}
+
+/* ============================================================
+   ИНТРО: ГЕОЛОКАЦИЯ И КАРТА
+   ============================================================ */
+.geo{ min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:5.5rem 1.5rem 3rem; }
+.geo__unit{
+  width:100%; max-width:880px;
+  background:var(--panel); border:2px solid var(--line); border-radius:var(--r);
+  box-shadow:0 2px 12px rgba(0,0,0,.4), 6px 6px 0 rgba(0,0,0,.45);
+  padding:1.25rem;
+}
+.geo__bar{
+  display:flex; align-items:center; gap:.75rem; justify-content:space-between;
+  border-bottom:2px solid var(--line); padding-bottom:.6rem; margin-bottom:1.2rem;
+  font-family:var(--f-mono); font-size:.7rem; letter-spacing:.18em; color:var(--grey);
+}
+.geo__screen{ display:grid; grid-template-columns:auto 1fr; gap:1.75rem; align-items:center; }
+@media (max-width:760px){ .geo__screen{ grid-template-columns:1fr; justify-items:center; } }
+.geo__radar{
+  position:relative; width:min(330px,78vw); aspect-ratio:1; border-radius:50%; overflow:hidden;
+  border:2px solid var(--green);
+  background:radial-gradient(circle at 50% 50%, #12240f, #07120a 72%);
+  box-shadow:inset 0 0 40px rgba(51,255,0,.16), 0 0 26px -6px rgba(51,255,0,.4);
+}
+.geo__grid{
+  position:absolute; inset:-35%;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(51,255,0,.16) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, rgba(51,255,0,.16) 0 1px, transparent 1px 32px);
+  transform:scale(var(--z,1));
+}
+.geo__rings{
+  position:absolute; inset:0;
+  background:repeating-radial-gradient(circle at 50% 50%, rgba(51,255,0,.22) 0 1px, transparent 1px 44px);
+}
+.geo__sweep{
+  position:absolute; inset:0;
+  background:conic-gradient(from 0deg, rgba(51,255,0,.42), transparent 26%);
+  animation:geoSweep 3.4s linear infinite;
+}
+@keyframes geoSweep{ to{ transform:rotate(360deg) } }
+.geo__marker{
+  position:absolute; left:50%; top:50%; width:26px; height:26px; margin:-13px 0 0 -13px;
+  border-radius:50%; border:2px solid var(--amber); background:rgba(255,176,0,.2);
+  transform:scale(var(--s,.3));
+  box-shadow:0 0 18px rgba(255,176,0,.85);
+}
+.geo__marker::after{
+  content:''; position:absolute; inset:-10px; border-radius:50%;
+  border:2px solid var(--amber); animation:ping 1.5s ease-out infinite;
+}
+@keyframes ping{ 0%{ transform:scale(.55); opacity:.9 } 100%{ transform:scale(2.3); opacity:0 } }
+.geo__cross{
+  position:absolute; left:50%; top:50%; width:120%; height:1px;
+  background:rgba(255,176,0,.35); transform:translate(-50%,-50%);
+}
+.geo__readout{ display:grid; gap:.45rem; width:100%; }
+.geo__readout p{
+  display:flex; gap:1rem; justify-content:space-between; align-items:baseline;
+  border-bottom:1px dashed var(--line); padding-bottom:.4rem;
+  font-family:var(--f-mono); font-size:.7rem; letter-spacing:.12em; color:var(--grey);
+}
+.geo__readout b{ color:var(--green); font-weight:400; text-align:right; text-shadow:0 0 8px rgba(51,255,0,.5); }
+.geo__readout b.is-warn{ color:var(--amber); text-shadow:0 0 8px rgba(255,176,0,.5); }
+
+/* уведомление */
+.toast{
+  position:fixed; top:72px; right:1.25rem; z-index:210;
+  display:flex; align-items:center; gap:.85rem;
+  max-width:min(360px, calc(100vw - 2.5rem)); padding:.9rem 1.1rem;
+  background:rgba(22,22,22,.95); border:2px solid var(--green); border-radius:8px;
+  box-shadow:0 20px 44px -22px rgba(0,0,0,.95), 0 0 26px -8px rgba(51,255,0,.6);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  animation:toastIn .55s var(--spring) both;
+}
+@keyframes toastIn{ from{ opacity:0; transform:translateX(46px) } to{ opacity:1; transform:none } }
+.toast__title{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.2em; color:var(--green); text-shadow:0 0 9px rgba(51,255,0,.6); }
+.toast__text{ margin-top:.3rem; font-size:1.05rem; color:var(--beige); line-height:1.35; overflow-wrap:anywhere; }
+.toast__body{ min-width:0; flex:1 1 auto; }
+.toast__time{ font-size:.64rem; letter-spacing:.16em; color:var(--grey); flex:none; align-self:flex-start; }
+
+/* ============================================================
+   ИГРА «ВСПОМНИ»
+   ============================================================ */
+.recall{ margin-bottom:1.4rem; }
+.recall__q{
+  font-family:var(--f-mono); font-size:.78rem; letter-spacing:.1em; color:var(--amber);
+  display:flex; align-items:center; gap:.6rem;
+}
+.recall__q::before{ content:'?'; color:var(--green); font-size:1rem; }
+.recall__form{ display:flex; gap:.6rem; margin-top:.85rem; flex-wrap:wrap; }
+.recall__input{
+  flex:1 1 240px; min-width:0;
+  background:#141414; border:2px solid var(--line); border-radius:6px;
+  color:var(--green); font-family:var(--f-mono); font-size:.85rem;
+  padding:.65rem .8rem;
+}
+.recall__input::placeholder{ color:#5f5f5f; }
+.recall__input:focus{ outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(51,255,0,.18); }
+.recall__tools{ margin-top:.75rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.recall__tools .mono{ color:var(--grey); }
+.recall__list{ list-style:none; margin:0; padding:0; display:grid; gap:1rem; }
+.recall__item{
+  display:grid; grid-template-columns:150px 1fr; gap:1.25rem; align-items:start;
+  background:var(--panel); border:2px solid var(--line); border-radius:6px;
+  padding:.9rem 1rem;
+  animation:recIn .5s var(--ease) both;
+}
+@keyframes recIn{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+.recall__item:hover{ border-color:var(--green); }
+.recall__when{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.14em; color:var(--amber); padding-top:.2rem; }
+.recall__what{ font-size:1.25rem; color:var(--beige); line-height:1.45; }
+.recall__del{
+  background:none; border:none; cursor:pointer; padding:0; margin-top:.5rem;
+  font-family:var(--f-mono); font-size:.62rem; letter-spacing:.16em; color:var(--grey);
+  border-bottom:1px dotted currentColor; transition:color .2s;
+}
+.recall__del:hover{ color:var(--red); }
+.recall__empty{
+  font-family:var(--f-mono); font-size:.78rem; color:var(--grey);
+  border:2px dashed var(--line); border-radius:6px; padding:1.2rem; text-align:center;
+}
+
+/* кадры для фото */
+.gallery{ display:flex; gap:.9rem; flex-wrap:wrap; margin-top:1.6rem; }
+.gallery__item{ margin:0; width:132px; }
+.gallery__frame{
+  height:100px; border:2px solid var(--line); border-radius:4px;
+  background:linear-gradient(135deg,#303030,#232323);
+  background-size:cover; background-position:center;
+  display:grid; place-items:center; overflow:hidden;
+  transition:border-color .25s var(--ease), transform .25s var(--ease);
+}
+.gallery__item:hover .gallery__frame{ border-color:var(--green); transform:translateY(-3px); }
+.gallery__cap{ margin-top:.45rem; font-family:var(--f-mono); font-size:.6rem; letter-spacing:.12em; color:var(--grey); text-align:center; }
+.gallery__frame .gallery__cap{ margin:0; }
+.gallery__frame.has-photo .gallery__cap{ display:none; }
+@media (max-width:768px){
+  .recall__item{ grid-template-columns:1fr; gap:.3rem; }
+}
+
+/* ============================================================
+   ЭТАПНЫЕ БЛОКИРОВКИ
+   ============================================================ */
+.lock{ margin-bottom:1.5rem; }
+.lock__box{
+  display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap;
+  background:repeating-linear-gradient(135deg, #2b2b2b 0 10px, #262626 10px 20px);
+  border:2px dashed var(--line); border-radius:var(--r);
+  padding:1.4rem 1.5rem;
+  box-shadow:0 2px 12px rgba(0,0,0,.4), 4px 4px 0 rgba(0,0,0,.4);
+}
+.lock__ico{
+  flex:none; display:grid; place-items:center; width:52px; height:52px;
+  border:2px solid var(--amber); border-radius:8px; background:rgba(255,176,0,.08);
+  color:var(--amber);
+  animation:lockPulse 2.4s ease-in-out infinite;
+}
+@keyframes lockPulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(255,176,0,.0) }
+  50%{ box-shadow:0 0 14px 0 rgba(255,176,0,.45) }
+}
+.lock__info{ flex:1 1 260px; min-width:0; }
+.lock__title{ font-family:var(--f-mono); font-size:.7rem; letter-spacing:.2em; color:var(--amber); }
+.lock__teaser{
+  margin-top:.4rem; font-size:clamp(1.3rem,3vw,1.9rem); color:var(--grey);
+  opacity:.65; line-height:1.1;
+}
+.lock__req{ margin-top:.5rem; font-family:var(--f-mono); font-size:.78rem; color:var(--beige); }
+.lock__bar{ display:flex; gap:4px; flex:none; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+.lock__seg{ width:18px; height:9px; background:#4a4a4a; border:1px solid #262626; }
+.lock__seg.is-on{ background:var(--amber); box-shadow:0 0 8px rgba(255,176,0,.7); }
+.lock__count{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.14em; color:var(--grey); margin-left:.4rem; }
+
+/* ввод кода в замке */
+.lock__form{ display:flex; gap:.6rem; margin-top:.9rem; flex-wrap:wrap; }
+.lock__input{
+  flex:1 1 170px; min-width:0;
+  background:#141414; border:2px solid var(--line); border-radius:6px;
+  color:var(--green); font-family:var(--f-mono); font-size:.95rem; letter-spacing:.32em;
+  padding:.6rem .85rem; text-transform:uppercase;
+}
+.lock__input::placeholder{ color:#5f5f5f; letter-spacing:.18em; text-transform:none; }
+.lock__input:focus{ outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(51,255,0,.18); }
+.lock__msg{ margin-top:.6rem; font-family:var(--f-mono); font-size:.74rem; color:var(--grey); min-height:1.2em; }
+.lock__msg.is-err{ color:var(--red); }
+.lock__msg.is-ok{ color:var(--green); }
+.lock__box.is-shake{ animation:shake .4s ease; }
+
+/* секретное сообщение */
+.secret{
+  background:var(--offwhite); color:var(--ink);
+  border:2px solid var(--ink); border-radius:8px;
+  box-shadow:0 16px 36px -22px rgba(0,0,0,.85), 6px 6px 0 rgba(0,0,0,.45);
+  padding:clamp(24px,5vw,44px);
+  max-width:720px; margin:0 auto;
+}
+.secret__text{ font-family:var(--f-mono); font-size:1rem; line-height:1.9; color:#2b2a28; }
+.secret__sign{
+  display:block; margin-top:1.6rem; padding-top:1rem;
+  border-top:2px dashed #c9bfa8;
+  font-family:var(--f-mono); font-size:.8rem; letter-spacing:.14em; color:#7a6a52;
+}
+.secret__text.is-decoding{ color:var(--seal); }
+.lock.is-open{ animation:lockOut .45s var(--ease) forwards; }
+@keyframes lockOut{
+  from{ opacity:1; transform:none }
+  to{ opacity:0; transform:translateY(-10px) }
+}
+.gate{ transition:opacity .4s var(--ease); }
+.gate.is-new{ animation:gateIn .6s var(--ease) both; }
+@keyframes gateIn{ from{ opacity:0; transform:translateY(18px) } to{ opacity:1; transform:none } }
+.flash-ok{ animation:flashOk .8s var(--ease) both; }
+@keyframes flashOk{
+  0%,100%{ box-shadow:0 0 0 0 rgba(51,255,0,0) }
+  30%{ box-shadow:0 0 0 6px rgba(51,255,0,.35) }
+}
+
+/* ============================================================
+   ЖИЗНЬ: анимации
+   ============================================================ */
+/* бегущая полоса развёртки */
+.sweep{
+  position:fixed; left:0; right:0; height:150px; top:-20%; z-index:198; pointer-events:none;
+  background:linear-gradient(180deg, transparent, rgba(51,255,0,.055) 45%, rgba(232,224,208,.035) 55%, transparent);
+  animation:sweepDown 7.5s linear infinite;
+}
+@keyframes sweepDown{ from{ top:-20% } to{ top:108% } }
+
+/* пыль в воздухе */
+#dust{ position:fixed; inset:0; z-index:94; pointer-events:none; }
+
+/* включение «кинескопа» */
+.crt-on .boot__unit{ animation:crtOn 1s var(--ease) both; }
+@keyframes crtOn{
+  0%{ opacity:0; transform:scaleY(.006) scaleX(.96); filter:brightness(4); }
+  32%{ opacity:1; transform:scaleY(.006) scaleX(1); filter:brightness(4); }
+  62%{ transform:scaleY(1); filter:brightness(1.5); }
+  100%{ transform:scaleY(1); filter:none; }
+}
+
+/* лента ползёт */
+.tape::before{ animation:tapeRun 2.6s linear infinite; }
+.tape::after{ animation:tapeRun 2.6s linear infinite reverse; }
+@keyframes tapeRun{ to{ background-position-x:24px } }
+
+/* расшифровка: текст «считается» */
+.cipher__data.is-decoding,
+.cipher__solution .track__text.is-decoding{
+  color:var(--amber);
+  text-shadow:0 0 10px rgba(255,176,0,.7);
+}
+
+/* индикатор секции в HUD */
+.hud__sect{
+  font-family:var(--f-mono); font-size:.68rem; letter-spacing:.2em;
+  color:var(--amber); text-shadow:0 0 8px rgba(255,176,0,.6);
+  white-space:nowrap;
+}
+
+/* подсказка всплывает */
+.cipher__hint{ animation:fadeUp .4s var(--ease) both; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
+
+@media (prefers-reduced-motion:reduce){
+  .sweep{ display:none; }
+  .tape::before,.tape::after{ animation:none; }
+}
+@media (max-width:900px){
+  .track{ grid-column:span 12 !important; }
+}
+@media (max-width:768px){
+  body{ font-size:1.15rem; }
+  .section{ padding-left:1rem; padding-right:1rem; }
+  .tl__item{ grid-template-columns:1fr; gap:.35rem; }
+  .boot__unit{ padding:.9rem; }
+  .hud__brand span.hide-sm{ display:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  .reveal{ opacity:1 !important; transform:none !important; }
+  html{ scroll-behavior:auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- CRT / VHS оверлеи -->
+<div class="crt" aria-hidden="true"></div>
+<div class="vhs" aria-hidden="true"></div>
+<div class="sweep" aria-hidden="true"></div>
+<canvas id="dust" aria-hidden="true"></canvas>
+
+<!-- ================= HUD ================= -->
+<header class="hud">
+  <div class="hud__in">
+    <div class="hud__brand">
+      <span class="led led--green"></span>
+      <span class="hide-sm">ПОЧТОВОЕ ОТДЕЛЕНИЕ</span>
+      <span class="hide-sm">·</span>
+      <span>СИСТЕМА В СЕТИ</span>
+    </div>
+    <div class="hud__leds">
+      <span class="hud__sect" id="hudSect">ИНИЦИАЛИЗАЦИЯ</span>
+      <div class="hud__prog" id="hudProg" aria-hidden="true"></div>
+      <span class="led led--amber" id="hudLed"></span>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 0. ГЕОЛОКАЦИЯ ================= -->
+<section class="geo" id="geo">
+  <div class="geo__unit">
+    <div class="geo__bar">
+      <span>GEO-01 // ОПРЕДЕЛЕНИЕ МЕСТОПОЛОЖЕНИЯ</span>
+      <span style="display:flex;gap:.9rem;align-items:center">
+        <button class="recall__del" id="geoSkip" type="button">ПРОПУСТИТЬ →</button>
+        <span style="display:flex;gap:.5rem;align-items:center">
+          <span class="led led--amber led--blink" id="geoLed"></span>
+          <span id="geoStatus">ПОИСК СИГНАЛА</span>
+        </span>
+      </span>
+    </div>
+
+    <div class="geo__screen">
+      <div class="geo__radar" id="geoRadar">
+        <div class="geo__grid"></div>
+        <div class="geo__rings"></div>
+        <div class="geo__sweep"></div>
+        <div class="geo__marker"><span class="geo__cross"></span></div>
+      </div>
+
+      <div class="geo__readout">
+        <p><span>КООРДИНАТЫ</span><b id="geoCoords">—</b></p>
+        <p><span>ВЫСОТА</span><b id="geoAlt">—</b></p>
+        <p><span>ЗУМ</span><b id="geoZoom">×0.4</b></p>
+        <p><span>АДРЕС</span><b id="geoAddr">ОПРЕДЕЛЯЕМ…</b></p>
+        <p><span>МАРШРУТ</span><b id="geoRoute">ПОЧТОВОЕ ОТДЕЛЕНИЕ → ВЫ</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- уведомление о письме -->
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span class="led led--green led--blink"></span>
+  <div class="toast__body">
+    <p class="toast__title">ПРИШЛО ПИСЬМО</p>
+    <p class="toast__text">Почтовое отделение: для вас есть отправление.</p>
+  </div>
+  <span class="toast__time" id="toastTime">СЕЙЧАС</span>
+</div>
+
+<!-- ================= 1. ТЕРМИНАЛ ================= -->
+<section class="boot" id="boot" hidden>
+  <div class="boot__unit">
+    <div class="boot__bar">
+      <span class="mono" style="color:var(--grey)">TERM-01 // ИНИЦИАЛИЗАЦИЯ</span>
+      <span style="display:flex; gap:.4rem; align-items:center">
+        <span class="led led--green led--blink"></span>
+        <span class="mono" style="color:var(--grey)">REC</span>
+      </span>
+    </div>
+
+    <div class="boot__body" id="bootBody"></div>
+
+    <div class="boot__hero">
+      <p class="boot__for" id="bootFor">ДЛЯ ТЕБЯ</p>
+      <h1 class="boot__name glow" id="bootName"></h1>
+      <p class="boot__reason" id="bootReason"></p>
+      <div class="boot__actions">
+        <button class="btn btn--primary" id="openBtn">
+          Вскрыть
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+      <p class="mono" style="color:var(--grey); margin-top:1.1rem" id="bootNote"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. КОНВЕРТ ================= -->
+<section class="deck" id="stage" hidden>
+  <p class="deck__label"><span class="led led--amber led--blink"></span> ЛЕНТА ПРИГОТОВЛЕНА</p>
+
+  <div class="deck__reels">
+    <div class="reel"><span class="reel__spokes"></span><span class="reel__hub"></span></div>
+    <div class="vu"><span class="vu__needle"></span></div>
+    <div class="reel reel--right"><span class="reel__spokes"></span><span class="reel__hub"></span></div>
+  </div>
+
+  <button class="env" id="env" aria-label="Вскрыть конверт">
+    <span class="env__back"></span>
+    <span class="env__sheet"></span>
+    <span class="env__flap"></span>
+    <span class="env__front"></span>
+    <span class="env__flights" id="flights"></span>
+    <span class="env__tag">ОТКРЫТЬ</span>
+    <span class="env__stamp">ЗАПЕЧАТАНО</span>
+  </button>
+
+  <p class="deck__hint" id="envHint">НАЖМИ НА КОНВЕРТ</p>
+</section>
+
+<!-- ================= 3. ПИСЬМА ================= -->
+<section class="section" id="letters">
+  <div class="lock" data-lock="letters"></div>
+  <div class="gate" data-gate="letters">
+    <header class="sec-head reveal">
+      <p class="kicker">ДОРОЖКИ 01—07</p>
+      <h2 id="lettersTitle"></h2>
+      <p class="sec-note" id="lettersNote">Первые три открываются сразу. Остальные четыре зашифрованы: расшифруй и прочитай.</p>
+    </header>
+    <div class="tracks" id="tracks"></div>
+  </div>
+</section>
+
+<!-- ================= 4. ВСПОМНИ ================= -->
+<section class="section" id="timeline">
+  <div class="lock" data-lock="timeline"></div>
+  <div class="gate" data-gate="timeline">
+    <header class="sec-head reveal">
+      <p class="kicker">ИГРА «ВСПОМНИ»</p>
+      <h2 id="timelineTitle"></h2>
+      <p class="sec-note" id="timelineNote"></p>
+    </header>
+    <div class="tape reveal">
+      <div class="recall">
+        <p class="recall__q" id="recallQ"></p>
+        <form class="recall__form" id="recallForm" autocomplete="off">
+          <input class="recall__input" id="recallInput" type="text" maxlength="160" placeholder="НАПИШИ МОМЕНТ, КОТОРЫЙ ТЫ ПОМНИШЬ…" aria-label="Момент, который ты помнишь">
+          <button class="btn btn--primary" type="submit">Записать на ленту</button>
+        </form>
+        <div class="recall__tools">
+          <span class="mono" id="recallCount">ЗАПИСЕЙ НА ЛЕНТЕ: 0</span>
+          <button class="recall__del" id="recallClear" type="button">ОЧИСТИТЬ ЛЕНТУ</button>
+        </div>
+      </div>
+      <ol class="recall__list" id="tl"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. ВИКТОРИНА ================= -->
+<section class="section" id="quiz">
+  <div class="lock" data-lock="quiz"></div>
+  <div class="gate" data-gate="quiz">
+    <header class="sec-head reveal">
+      <p class="kicker">ПРОВЕРКА ПАМЯТИ</p>
+      <h2 id="quizTitle"></h2>
+      <p class="sec-note">Пять вопросов. Ошибка не отменяет подарок.</p>
+    </header>
+    <div class="term reveal" id="quizCard"></div>
+  </div>
+</section>
+
+<!-- ================= 6. ФИНАЛ ================= -->
+<section class="section finale" id="finale">
+  <div class="lock" data-lock="finale"></div>
+  <div class="gate" data-gate="finale">
+    <header class="sec-head reveal">
+      <p class="kicker">ФИНАЛЬНАЯ КАССЕТА</p>
+      <h2 id="finaleTitle"></h2>
+      <p class="sec-note">Одна кассета. Внутри — кое-что приятное.</p>
+    </header>
+    <button class="cass" id="cass" aria-label="Открыть подарок">
+      <span class="cass__body"></span>
+      <span class="cass__label" id="cassLabel">ДЛЯ ТЕБЯ</span>
+      <span class="cass__win">
+        <span class="cass__reel"></span>
+        <span class="cass__reel"></span>
+      </span>
+      <span class="ticket" id="ticket">
+        <span class="ticket__title" id="ticketTitle"></span>
+        <span class="ticket__text" id="ticketText"></span>
+        <span class="ticket__date" id="ticketDate"></span>
+        <span class="ticket__code" id="ticketCode"></span>
+      </span>
+    </button>
+
+    <p class="sign" id="sign"></p>
+  </div>
+</section>
+
+<!-- ================= 7. СЕКРЕТНОЕ СООБЩЕНИЕ ================= -->
+<section class="section" id="secret">
+  <div class="lock" data-lock="secret"></div>
+  <div class="gate" data-gate="secret">
+    <header class="sec-head reveal">
+      <p class="kicker" id="secretKicker">ЛИЧНОЕ</p>
+      <h2 id="secretTitle"></h2>
+      <p class="sec-note" id="secretNote"></p>
+    </header>
+    <div class="secret reveal">
+      <p class="secret__text" id="secretText"></p>
+      <span class="secret__sign" id="secretSign"></span>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot__in">
+    <span id="footLeft"></span>
+    <span>ПОЧТОВОЕ ОТДЕЛЕНИЕ // <span id="footYear"></span></span>
+  </div>
+</footer>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<button class="music" id="musicBtn" hidden aria-label="Включить музыку">♪</button>
+
+<script>
+/* ================================================================
+   ██  ВЕСЬ ПОДАРОК — В ОДНОМ КОНФИГЕ  ██
+   Меняй только этот блок. Разметку не трогай.
+   ================================================================ */
+const GIFT = {
+
+  /* ─────────── КТО ПОЛУЧАЕТ ─────────── */
+  name: "Бусинка",                          // имя на странице (крупно)
+  nameIn: "Бусинки",                        // имя в родительном падеже («для Бусинки»)
+  fullName: "Анастасия",                    // полное имя (вкладка браузера, подвал)
+  fullNameIn: "Анастасии",                  // полное имя в родительном падеже («для Анастасии»)
+  pageTitle: "ПОЧТОВОЕ ОТДЕЛЕНИЕ — ДЛЯ АНАСТАСИИ",
+  reason: "лучшей девочке — лучшие письма", // подпись под именем
+  introNote: "Здесь нет ничего длинного. Только семь писем, наша хроника и один подарок в конце.",
+
+  boot: [
+    "> ПОДКЛЮЧЕНИЕ К ПОЧТОВОМУ ОТДЕЛЕНИЮ...............",
+    "> ПРОВЕРКА ЛЕНТЫ ...............................",
+    "> ИНИЦИАЛИЗАЦИЯ КАДРОВ..........................",
+    "> ГОТОВ К ПРИЁМУ. СЕЙЧАС БУДЕТ ПИСЬМО."
+  ],
+
+  /* ─────────── ПИСЬМА ───────────
+     Первые три открываются сразу как обычные.
+     У остальных locked: true — они зашифрованы.
+     cipher.type:  "caesar"    — сдвиг букв по алфавиту (cipher.shift)
+                  "reverse"    — буквы в словах задом наперёд
+                  "lookalike"  — буквы заменены на похожие (0, @, 3, c, p…)
+     cipher.instruction — что показать при открытии письма
+     cipher.hint        — дополнительная подсказка по кнопке
+  */
+  lettersTitle: "Семь писем, которые я всё-таки написал",
+  letters: [
+    { cat: "Я заметил",
+      text: "Ты всегда замечаешь, что мне грустно — раньше, чем я сам. И делаешь вид, что ничего не было.",
+      sign: "— тот, кто заметил" },
+    { cat: "Я помню",
+      text: "Помню наш первый разговор: он должен был закончиться за полчаса, а закончился под утро.",
+      sign: "— примерно до 4:30" },
+    { cat: "Спасибо",
+      text: "Спасибо, что ты рядом, когда всё идёт не по плану, и помагаешь со всем справиться.",
+      sign: "— с благодарностью" },
+    { cat: "Я заметил",
+      text: "Ты пахнешь как самая лучшая и моя любимая Жена, и это лучший запах в мире.",
+      sign: "— проверено",
+      locked: true,
+      cipher: {
+        type: "reverse",
+        instruction: "Письмо отправлено задом наперёд: в каждом слове буквы идут в обратном порядке. Переверни слова — и прочитаешь.",
+        hint: "Подсказка: начинается с «Ты»."
+      } },
+    { cat: "Я помню",
+      text: "Помню, как мы ездили в Могилев и незапланировано уезжали на поезде, и как это оказалось лучшей частью поездки.",
+      sign: "— включая карту",
+      locked: true,
+      cipher: {
+        type: "caesar",
+        shift: 3,
+        instruction: "Каждая буква сдвинута на 3 позиции вправо по русскому алфавиту. Сдвинь их на 3 назад — и письмо откроется.",
+        hint: "Подсказка: начинается с «Помню»."
+      } },
+    { cat: "Хочу сказать",
+      text: "Мне нравится, что с тобой можно делиться абсолютно всем и не переживать за это.",
+      sign: "— очень просто",
+      locked: true,
+      cipher: {
+        type: "lookalike",
+        instruction: "Некоторые буквы заменены на похожие: 0 вместо «о», @ вместо «а», 3 вместо «е», латинские c, p, x, y вместо русских с, р, х, у. Верни их на места.",
+        hint: "Подсказка: ищи цифры 0 и 3, а также латинские c, p, x, y, k, m."
+      } },
+    { cat: "Хочу сказать",
+      text: "В следующем году хочу больше наших глупостей. Буквально больше.",
+      sign: "— план на год",
+      locked: true,
+      cipher: {
+        type: "caesar",
+        shift: 5,
+        instruction: "Всё как в прошлый раз, только сдвиг другой — на 5 позиций вправо по русскому алфавиту. Сдвинь назад на 5.",
+        hint: "Подсказка: начинается с «В следующем»."
+      } }
+  ],
+
+  /* ─────────── НАСТРОЙКИ ШИФРОВ ───────────
+     Меняй, если хочешь другую сложность. Можно не трогать.
+  */
+  cipherSettings: {
+    attemptsBeforeHint: 2,   // после скольких неудач показывать кнопку «подсказка»
+    maxAttempts: 4,          // после скольких неудач можно сдаться
+    caseSensitive: false
+  },
+
+  /* ─────────── СЕКРЕТНОЕ СООБЩЕНИЕ ───────────
+     Открывается только кодом. Код можно узнать только поцелуем.
+  */
+  secret: {
+    code: "3003",                     // код, который назовёт он
+    kicker: "ЛИЧНОЕ · ТОЛЬКО ДЛЯ ТЕБЯ",
+    title: "Секретное сообщение",
+    note: "Это сообщение откроется только если ты знаешь код. Спроси его — он скажет.",
+    text: "Ты умничка! Ты смогла узнать пароль за небольшое задание. Я тебя очень сильно люблю и хочу прожить с тобой всю жизнь\nИ чтобы все проблемы обходили нас стороной и не рушили наш план - НАВСЕГДА",
+    sign: "— целую"
+  },
+
+  /* ─────────── ЭТАПЫ ───────────
+     Каждый этап открывает следующий: пока не пройден — нельзя.
+     need — что нужно сделать, чтобы открыть этап.
+  */
+  stages: {
+    letters:  { need: "ВСКРЫТЬ КОНВЕРТ" },
+    timeline: { need: "ПРОЧИТАТЬ ВСЕ ПИСЬМА" },
+    quiz:     { need: "ЗАПИСАТЬ МОМЕНТ НА ЛЕНТУ" },
+    finale:   { need: "ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ" },
+    secret:   { need: "ПОЦЕЛОВАТЬ И НАЗВАТЬ КОД" }
+  },
+
+  /* ─────────── ИНТРО: ГЕОЛОКАЦИЯ → КАРТА → УВЕДОМЛЕНИЕ ─────────── */
+  intro: {
+    geo: true,                 // спрашивать геолокацию при входе
+    geoTimeout: 9000,          // сколько ждать разрешения/сигнала, мс
+    zoomDuration: 2800,        // длительность «приближения» на карте, мс
+    address: true,             // подтягивать адрес по координатам (OpenStreetMap)
+    toastDuration: 3400,       // сколько висит уведомление о письме, мс
+    startText: "ПРИШЛО ПИСЬМО",
+    toastText: "Почтовое отделение: для вас есть отправление.",
+    routeText: "ПОЧТОВОЕ ОТДЕЛЕНИЕ → ВЫ"
+  },
+
+  /* ─────────── ИГРА «ВСПОМНИ» ───────────
+     Лента пустая — моменты вписывает она сама.
+     prompts — подсказки, которые меняются при каждом заходе.
+  */
+  timelineTitle: "Вспомни",
+  timelineNote: "Напиши момент, который ты помнишь — он запишется на ленту. Записи остаются здесь, пока не очистишь ленту.",
+  recall: {
+    prompts: [
+      "Что ты помнишь из нашего первого дня?",
+      "Назови место, где нам было лучше всего",
+      "Что я сказал тогда, что тебя удивило?",
+      "Вспомни нашу последнюю хохочу ссамку",
+      "Какой запах у тебя ассоциируется со мной?",
+      "Что мы собирались, но так и не сделали?"
+    ],
+    empty: "ЛЕНТА ПОКА ПУСТА. ЗАПИШИ ПЕРВЫЙ МОМЕНТ.",
+    storageKey: "pochtovoe.vspomni",
+    remember: true,
+    photos: ["01", "02", "03", "04", "05"]
+  },
+
+  quizTitle: "Помнишь ли ты нас?",
+  quiz: [
+    { q: "Чем мы занимались при первой встрече?",
+      options: ["Говорили четыре часа", "Смотрели фильм", "Играли в карты"], answer: 0,
+      ok: "Конечно — болтали." },
+    { q: "Что я никогда не ем?",
+      options: ["Брокколи", "Перец", "Помидоры"], answer: 2,
+      ok: "Верно, помидоры. И томатный сок туда же)" },
+    { q: "Наша первая совместная поездка?",
+      options: ["Минск", "Могилев", "Житковичи"], answer: 0,
+      ok: "В Минск. Отдохнуть пару дней." },
+    { q: "Что я забываю чаще всего?",
+      options: ["Ключи", "Телефон", "Зарядку"], answer: 2,
+      ok: "Зярядка. Каждый день." },
+    { q: "Что мы делали в первую встречу после армии?",
+      options: ["Смотрели сериал", "Готовили ужин", "Пили алкоголь"], answer: 2,
+      ok: "Пили до утра." }
+  ],
+  quizOkText: "Ты помнишь лучше, чем я надеялся. Подарок твой.",
+  quizBadText: "Ну почти. Но подарок всё равно твой — обещаю.",
+
+  finaleTitle: "И последнее",
+  gift: {
+    title: "Билет в кино",
+    text: "На сеанс, который ты выберешь сама. Плюс десерт после — это не обсуждается.",
+    date: "20 декабря , 19:00",
+    code: "КОД: ОТКРЫТО"
+  },
+  sign: "С любовью, <b>начальник почтового отделения</b>"
+};
+/* ============================== КОНЕЦ ПРАВКИ ============================== */
+
+
+/* ================================================================
+   СБОРКА
+   ================================================================ */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const $t = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+const $h = (id, v) => { const el = $(id); if (el) el.innerHTML = v; };
+
+document.title = GIFT.pageTitle || "ПОЧТОВОЕ ОТДЕЛЕНИЕ";
+const SECRET = GIFT.secret || {};
+$t("#bootFor", `ДЛЯ ${String(GIFT.nameIn || GIFT.name || "ТЕБЯ").toUpperCase()}`);
+$t("#bootName", GIFT.name || "тебе");
+$t("#bootReason", GIFT.reason || "");
+$t("#bootNote", GIFT.introNote || "");
+$t("#lettersTitle", GIFT.lettersTitle || "Письма");
+$t("#timelineTitle", GIFT.timelineTitle || "Вспомни");
+$t("#timelineNote", GIFT.timelineNote || "");
+$t("#quizTitle", GIFT.quizTitle || "Проверка памяти");
+$t("#finaleTitle", GIFT.finaleTitle || "И последнее");
+$t("#secretKicker", SECRET.kicker || "ЛИЧНОЕ");
+$t("#secretTitle", SECRET.title || "Секретное сообщение");
+$t("#secretNote", SECRET.note || "");
+$t("#secretText", SECRET.text || "");
+$t("#secretSign", SECRET.sign || "");
+$t("#cassLabel", `ДЛЯ ${String(GIFT.nameIn || GIFT.name || "ТЕБЯ").toUpperCase()}`);
+$t("#ticketTitle", GIFT.gift.title || "");
+$t("#ticketText", GIFT.gift.text || "");
+$t("#ticketDate", GIFT.gift.date || "");
+$t("#ticketCode", GIFT.gift.code || "");
+$h("#sign", GIFT.sign ? `— ${GIFT.sign}` : "");
+$t("#footLeft", `ДЛЯ ${GIFT.fullNameIn || GIFT.fullName || GIFT.name || "ТЕБЯ"}`);
+$t("#footYear", new Date().getFullYear());
+
+/* --- индикатор прогресса в HUD --- */
+const SECTIONS = ["geo", "boot", "stage", "letters", "timeline", "quiz", "finale", "secret"];
+const SECTION_NAMES = {
+  geo: "ОПРЕДЕЛЕНИЕ МЕСТА", boot: "ИНИЦИАЛИЗАЦИЯ", stage: "КОНВЕРТ", letters: "ПИСЬМА",
+  timeline: "ВСПОМНИ", quiz: "ПРОВЕРКА ПАМЯТИ", finale: "ПОДАРОК", secret: "СЕКРЕТ"
+};
+const hudProg = $("#hudProg");
+const hudSect = $("#hudSect");
+SECTIONS.forEach(() => {
+  const s = document.createElement("span");
+  s.className = "hud__seg";
+  hudProg.appendChild(s);
+});
+const setProgress = (i) => {
+  $$(".hud__seg", hudProg).forEach((s, k) => s.classList.toggle("is-on", k <= i));
+  const name = SECTION_NAMES[SECTIONS[i]] || "";
+  if (hudSect.textContent !== name){
+    hudSect.textContent = name;
+    hudSect.classList.remove("is-in");
+    void hudSect.offsetWidth;
+    hudSect.classList.add("is-in");
+  }
+};
+setProgress(0);
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (en.isIntersecting) {
+      en.target.classList.add("is-in");
+      obs.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+/* все .reveal — включая заголовки секций и блок викторины */
+$$(".reveal").forEach(el => obs.observe(el));
+
+/* активная секция считается по позиции скролла — так надёжнее */
+let activeSection = 0;
+function updateActiveSection(){
+  const line = innerHeight * 0.35;
+  let idx = 0;
+  SECTIONS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el || el.hidden) return;
+    if (el.getBoundingClientRect().top <= line) idx = i;
+  });
+  if (idx !== activeSection){ activeSection = idx; setProgress(idx); }
+}
+addEventListener("scroll", updateActiveSection, { passive: true });
+addEventListener("resize", updateActiveSection);
+
+/* ================================================================
+   ИНТРО: ГЕОЛОКАЦИЯ → ПРИБЛИЖЕНИЕ → УВЕДОМЛЕНИЕ → ТЕРМИНАЛ
+   ================================================================ */
+const INTRO = GIFT.intro || {};
+const geoSec   = $("#geo");
+const geoLed   = $("#geoLed");
+const geoStat  = $("#geoStatus");
+const geoCoord = $("#geoCoords");
+const geoAlt   = $("#geoAlt");
+const geoZoom  = $("#geoZoom");
+const geoAddr  = $("#geoAddr");
+const geoRoute = $("#geoRoute");
+const radar    = $("#geoRadar");
+const toast    = $("#toast");
+
+if (INTRO.routeText) geoRoute.textContent = INTRO.routeText;
+
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+let geoSkip = false;
+let geoResolve = null;
+function getGeo(){
+  return new Promise((resolve) => {
+    geoResolve = resolve;
+    if (!INTRO.geo || !("geolocation" in navigator)){ resolve(null); return; }
+    let settled = false;
+    const limit = INTRO.geoTimeout || 9000;
+    const timer = setTimeout(() => { if (!settled){ settled = true; resolve(null); } }, limit);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { if (!settled){ settled = true; clearTimeout(timer); resolve(pos.coords); } },
+      () => { if (!settled){ settled = true; clearTimeout(timer); resolve(null); } },
+      { enableHighAccuracy: false, timeout: limit, maximumAge: 120000 }
+    );
+  });
+}
+$("#geoSkip").addEventListener("click", () => {
+  geoSkip = true;
+  if (geoResolve) geoResolve(null);
+});
+
+/* «приближение» на точку: высота падает, зум растёт, координаты сходятся */
+function zoomTo(coords){
+  return new Promise((resolve) => {
+    const dur = INTRO.zoomDuration || 2800;
+    const t0 = performance.now();
+    const lat = coords.latitude, lon = coords.longitude;
+    const fromLat = lat + (Math.random() - .5) * .5;
+    const fromLon = lon + (Math.random() - .5) * .5;
+    const step = () => {
+      const p = Math.min(1, (performance.now() - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      const cl = fromLat + (lat - fromLat) * e;
+      const cLon = fromLon + (lon - fromLon) * e;
+      const zoom = .4 + e * 63.6;
+      const alt = Math.round(12400 * Math.pow(1 - e, 2.4) + 6);
+      geoCoord.textContent = `${cl.toFixed(4)}° ${cLon.toFixed(4)}°`;
+      geoAlt.textContent = `${alt} м`;
+      geoZoom.textContent = `×${zoom.toFixed(1)}`;
+      radar.style.setProperty("--z", (1 + e * 2.6).toFixed(3));
+      radar.style.setProperty("--s", (.25 + e * 1.5).toFixed(3));
+      if (p < 1) setTimeout(step, 32); else resolve();
+    };
+    setTimeout(step, 32);
+  });
+}
+
+async function reverseGeocode(lat, lon){
+  if (!INTRO.address) return "";
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=16&accept-language=ru`;
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 4500);
+    const res = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) return "";
+    const data = await res.json();
+    const a = data.address || {};
+    const parts = [a.city || a.town || a.village || a.county, a.suburb || a.district, a.street, a.house_number].filter(Boolean);
+    return parts.length ? parts.join(", ") : (data.display_name || "");
+  } catch (e) { return ""; }
+}
+
+/* адрес печатается по одному символу */
+function typeAddress(text){
+  if (!text) return Promise.resolve();
+  return new Promise((resolve) => {
+    let i = 0;
+    const tick = () => {
+      geoAddr.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(tick, 26);
+      else resolve();
+    };
+    tick();
+  });
+}
+
+function showToast(){
+  toast.hidden = false;
+  $(".toast__title", toast).textContent = INTRO.startText || "ПРИШЛО ПИСЬМО";
+  $(".toast__text", toast).textContent = INTRO.toastText || "";
+  const now = new Date();
+  $("#toastTime").textContent = `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+}
+
+async function runIntro(){
+  const coords = await getGeo();
+
+  if (coords){
+    geoStat.textContent = "СИГНАЛ НАЙДЕН";
+    geoLed.classList.remove("led--amber");
+    geoLed.classList.add("led--green");
+    await zoomTo(coords);
+    geoStat.textContent = "ПРИБЛИЖЕНИЕ ВЫПОЛНЕНО";
+    const addr = await reverseGeocode(coords.latitude, coords.longitude);
+    if (addr) await typeAddress(addr);
+    else { geoAddr.textContent = `${coords.latitude.toFixed(4)}° ${coords.longitude.toFixed(4)}°`; }
+    await wait(700);
+  } else {
+    geoStat.textContent = geoSkip ? "ПРИНЯТО" : "СИГНАЛ НЕДОСТУПЕН";
+    geoLed.classList.remove("led--amber");
+    geoLed.classList.add(geoSkip ? "led--green" : "led--red");
+    geoAddr.textContent = geoSkip ? "ПРОПУЩЕНО" : "КООРДИНАТЫ НЕ ПОЛУЧЕНЫ";
+    geoCoord.textContent = "—"; geoAlt.textContent = "—"; geoZoom.textContent = "×1.0";
+    await wait(geoSkip ? 400 : 1500);
+  }
+
+  showToast();
+  await wait(INTRO.toastDuration || 3400);
+  toast.hidden = true;
+
+  geoSec.hidden = true;
+  $("#boot").hidden = false;
+  document.body.classList.add("crt-on");
+  setTimeout(() => document.body.classList.remove("crt-on"), 1200);
+  updateActiveSection();
+}
+runIntro();
+/* --- терминальная загрузка --- */
+const bootBody = $("#bootBody");
+const BOOT = GIFT.boot && GIFT.boot.length ? GIFT.boot : ["> СИСТЕМА В СЕТИ"];
+let bootIdx = 0;
+function bootLine(){
+  if (bootIdx >= BOOT.length){
+    const done = document.createElement("div");
+    done.className = "term-line is-ok";
+    done.innerHTML = `<b>&gt;</b><span>СИСТЕМА ГОТОВА. НАЖМИТЕ «ВСКРЫТЬ».</span><span class="caret"></span>`;
+    bootBody.appendChild(done);
+    return;
+  }
+  const line = document.createElement("div");
+  line.className = "term-line" + (bootIdx === BOOT.length - 1 ? " is-warn" : "");
+  line.innerHTML = `<b>&gt;</b><span></span>`;
+  bootBody.appendChild(line);
+  const span = line.querySelector("span");
+  const text = BOOT[bootIdx++];
+  let i = 0;
+  const tick = () => {
+    span.textContent = text.slice(0, ++i);
+    if (i < text.length) setTimeout(tick, 14);
+    else setTimeout(bootLine, 220);
+  };
+  tick();
+}
+bootLine();
+
+/* --- фото: подставляем файл, если он есть (лениво) --- */
+const PHOTO_EXT = ["jpg", "png", "webp"];
+function mountPhoto(el){
+  const key = el.dataset.photo;
+  if (!key) return;
+  for (const ext of PHOTO_EXT){
+    const src = `photos/${key}.${ext}`;
+    const img = new Image();
+    img.onload = () => {
+      el.style.backgroundImage = `url("${src}")`;
+      el.classList.add("has-photo");
+    };
+    img.src = src;
+  }
+}
+
+/* --- шифры --- */
+const RU_AL = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+const LOOK  = { "0":"о","@":"а","3":"е","c":"с","p":"р","x":"х","y":"у","k":"к","m":"м","b":"в","h":"н","o":"о","a":"а","e":"е","t":"т" };
+const ENC   = { "о":"0","а":"@","е":"3","с":"c","р":"p","х":"x","у":"y","к":"k","м":"m","в":"b","н":"h","т":"t" };
+
+function caesar(text, shift){
+  return text.replace(/[а-яёА-ЯЁ]/g, (ch) => {
+    const low = ch.toLowerCase();
+    const i = RU_AL.indexOf(low);
+    if (i < 0) return ch;
+    const out = RU_AL[(i + shift + RU_AL.length * 2) % RU_AL.length];
+    return ch === low ? out : out.toUpperCase();
+  });
+}
+function reverseWords(text){
+  return text.split(" ").map(w => w.split("").reverse().join("")).join(" ");
+}
+function lookalike(text){
+  return text.replace(/[а-яёА-ЯЁ]/g, (ch) => {
+    const low = ch.toLowerCase();
+    const out = ENC[low];
+    if (!out) return ch;
+    return ch === low ? out : out.toUpperCase();
+  });
+}
+function encode(text, cipher){
+  if (!cipher) return text;
+  if (cipher.type === "caesar")   return caesar(text, cipher.shift || 3);
+  if (cipher.type === "reverse")   return reverseWords(text);
+  if (cipher.type === "lookalike") return lookalike(text);
+  return text;
+}
+function norm(text){
+  let s = String(text).toLowerCase();
+  s = s.replace(/[0@3cpxyukmbohaet]/g, (m) => LOOK[m] || m);
+  s = s.replace(/ё/g, "е").replace(/[^а-я ]/g, "").replace(/\s+/g, " ").trim();
+  return s;
+}
+
+/* --- письма: асимметричная сетка --- */
+const SPANS = [7, 5, 5, 7, 12, 5, 7];
+const tracks = $("#tracks");
+const CS = GIFT.cipherSettings || { attemptsBeforeHint: 2, maxAttempts: 4 };
+const LOCK_ICON = '<svg class="lock-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+
+GIFT.letters.forEach((l, i) => {
+  const locked = !!l.locked && !!l.cipher;
+  const art = document.createElement("article");
+  art.className = "track panel reveal" + (locked ? " is-locked" : "");
+  art.style.setProperty("--span", SPANS[i % SPANS.length]);
+
+  const body = locked ? `
+    <div class="cipher">
+      <div class="cipher__box">
+        <div class="cipher__how">
+          <span class="led led--amber"></span>
+          <div>
+            <p class="cipher__how-title">КАК РАСШИФРОВАТЬ</p>
+            <p class="cipher__how-text">${esc(l.cipher.instruction || "")}</p>
+          </div>
+        </div>
+        <pre class="cipher__data" aria-label="Зашифрованный текст">${esc(encode(l.text || "", l.cipher))}</pre>
+        <form class="cipher__form" autocomplete="off">
+          <input class="cipher__input" type="text" placeholder="ВВЕДИ РАСШИФРОВКУ" aria-label="Расшифровка письма" spellcheck="false">
+          <button class="btn btn--primary btn--sm" type="submit">Расшифровать</button>
+        </form>
+        <p class="cipher__msg" role="status"></p>
+        <div class="cipher__links">
+          <button class="cipher__link" type="button" data-act="hint">Подсказка</button>
+          <button class="cipher__link" type="button" data-act="giveup">Сдаться</button>
+        </div>
+        <p class="cipher__hint" hidden></p>
+      </div>
+      <div class="cipher__solution">
+        <p class="track__text">${esc(l.text || "")}</p>
+        <span class="track__sign">${esc(l.sign || "")}</span>
+        <div class="track__strip" aria-hidden="true"></div>
+      </div>
+    </div>` : `
+      <p class="track__text">${esc(l.text || "")}</p>
+      <span class="track__sign">${esc(l.sign || "")}</span>
+      <div class="track__strip" aria-hidden="true"></div>`;
+
+  art.innerHTML = `
+    <button class="track__btn" aria-expanded="false">
+      <span class="track__top">
+        <span>ДОРОЖКА ${String(i + 1).padStart(2, "0")}</span>
+        <span class="track__cat">${locked ? LOCK_ICON : ""}${esc(l.cat || "")}</span>
+      </span>
+      <span class="track__name">${locked ? "ЗАШИФРОВАНО" : "ПИСЬМО"}</span>
+      <span class="track__hint"><span class="led led--on"></span>${locked ? "НАЖМИТЕ, ЧТОБЫ РАСШИФРОВАТЬ" : "НАЖМИТЕ, ЧТОБЫ ПРОЧИТАТЬ"}</span>
+    </button>
+    <div class="track__body"><div class="track__inner">${body}</div></div>`;
+
+  const btn = $(".track__btn", art);
+  btn.addEventListener("click", () => {
+    const open = art.classList.toggle("is-open");
+    btn.setAttribute("aria-expanded", String(open));
+    const led = $(".led", btn);
+    led.classList.toggle("led--on", !open && !art.classList.contains("is-decoded"));
+    led.classList.toggle("led--green", open || art.classList.contains("is-decoded"));
+    if (open) updateActiveSection();
+    if (open && !locked){ lettersRead.add(i); updateGates(); }
+  });
+
+  /* --- расшифровка --- */
+  if (locked){
+    const input  = $(".cipher__input", art);
+    const msg    = $(".cipher__msg", art);
+    const hint   = $(".cipher__hint", art);
+    const giveup = $("[data-act=giveup]", art);
+    const dataEl = $(".cipher__data", art);
+    const solEl  = $(".cipher__solution .track__text", art);
+    const expected = norm(l.text || "");
+    const ciphered = encode(l.text || "", l.cipher);
+    let attempts = 0;
+
+    /* эффект «считывания»: символы бегут, пока не встают на место */
+    const scramble = (el, to, dur) => {
+      const glyphs = "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя0123456789/#@$%&";
+      el.classList.add("is-decoding");
+      const t0 = performance.now();
+      const tick = () => {
+        const p = Math.min(1, (performance.now() - t0) / dur);
+        const keep = Math.floor(p * to.length);
+        let out = "";
+        for (let i = 0; i < to.length; i++){
+          out += i < keep ? to[i] : glyphs[(Math.random() * glyphs.length) | 0];
+        }
+        el.textContent = out;
+        if (p < 1) setTimeout(tick, 32);
+        else { el.textContent = to; el.classList.remove("is-decoding"); }
+      };
+      setTimeout(tick, 32);
+    };
+
+    const showHint = () => {
+      const first = (l.text || "").trim()[0] || "";
+      hint.textContent = l.cipher.hint || (`Подсказка: начинается с «${first}».`);
+      hint.hidden = false;
+    };
+    const reveal = () => {
+      art.classList.add("is-decoded");
+      msg.className = "cipher__msg is-ok";
+      msg.textContent = "РАСШИФРОВАНО. ДОСТАВЛЕНО.";
+      input.disabled = true;
+      input.value = "";
+      $(".track__hint", art).innerHTML = '<span class="led led--green"></span>ПИСЬМО ПРОЧИТАНО';
+      scramble(solEl, l.text || "", 900);
+      burst(0.4);
+      lettersRead.add(i);
+      updateGates();
+    };
+    const tryDecode = () => {
+      attempts++;
+      if (norm(input.value) && norm(input.value) === expected){ reveal(); return; }
+      msg.className = "cipher__msg is-err";
+      msg.textContent = input.value.trim() ? "НЕ РАСШИФРОВАНО. ПОПРОБУЙ ЕЩЁ." : "ВВЕДИ РАСШИФРОВКУ.";
+      const box = $(".cipher", art);
+      box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
+      scramble(dataEl, ciphered, 400);
+      if (attempts >= (CS.attemptsBeforeHint || 2)) showHint();
+      if (attempts >= (CS.maxAttempts || 4)) giveup.classList.add("is-hot");
+    };
+    $(".cipher__form", art).addEventListener("submit", (e) => { e.preventDefault(); tryDecode(); });
+    $("[data-act=hint]", art).addEventListener("click", showHint);
+    giveup.addEventListener("click", () => { input.value = l.text || ""; tryDecode(); });
+
+    /* при открытии карточки шифр «считывается» */
+    btn.addEventListener("click", () => {
+      if (!art.classList.contains("is-decoded")) scramble(dataEl, ciphered, 700);
+    });
+  }
+
+  tracks.appendChild(art);
+  obs.observe(art);
+});
+
+/* --- игра «Вспомни»: лента, которую она наполняет сама --- */
+const RECALL = GIFT.recall || {};
+const tl       = $("#tl");
+const recallQ  = $("#recallQ");
+const recallIn = $("#recallInput");
+const recallCt = $("#recallCount");
+const STORE_KEY = RECALL.storageKey || "pochtovoe.vspomni";
+
+function loadMemories(){
+  if (!RECALL.remember) return [];
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || "[]"); } catch (e) { return []; }
+}
+function saveMemories(list){
+  if (!RECALL.remember) return;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); } catch (e) {}
+}
+let memories = loadMemories();
+
+const PROMPTS = RECALL.prompts && RECALL.prompts.length ? RECALL.prompts : ["Что ты помнишь?"];
+function nextPrompt(){
+  const p = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+  recallQ.textContent = p;
+}
+nextPrompt();
+
+function renderMemories(){
+  tl.innerHTML = "";
+  if (!memories.length){
+    const li = document.createElement("li");
+    li.className = "recall__empty";
+    li.textContent = RECALL.empty || "ЛЕНТА ПОКА ПУСТА.";
+    tl.appendChild(li);
+  } else {
+    memories.forEach((m, i) => {
+      const li = document.createElement("li");
+      li.className = "recall__item";
+      li.innerHTML = `
+        <div class="recall__when">${esc(m.when || "")}</div>
+        <div>
+          <p class="recall__what">${esc(m.text || "")}</p>
+          <button class="recall__del" type="button" data-del="${i}">СТЕРТЬ КАДР</button>
+        </div>`;
+      tl.appendChild(li);
+    });
+  }
+  recallCt.textContent = `ЗАПИСЕЙ НА ЛЕНТЕ: ${memories.length}`;
+  $$("[data-del]", tl).forEach(btn => btn.addEventListener("click", () => {
+    memories.splice(Number(btn.dataset.del), 1);
+    saveMemories(memories);
+    renderMemories();
+    updateGates();
+  }));
+}
+renderMemories();
+
+$("#recallForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = recallIn.value.trim();
+  if (!text) return;
+  const now = new Date();
+  const when = `${String(now.getDate()).padStart(2,"0")}.${String(now.getMonth()+1).padStart(2,"0")} ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+  memories.unshift({ text, when });
+  saveMemories(memories);
+  recallIn.value = "";
+  renderMemories();
+  updateGates();
+  nextPrompt();
+  recallIn.focus();
+});
+$("#recallClear").addEventListener("click", () => {
+  if (!memories.length) return;
+  memories = [];
+  saveMemories(memories);
+  renderMemories();
+  updateGates();
+});
+
+/* --- кадры для фото --- */
+if (RECALL.photos && RECALL.photos.length){
+  const gal = document.createElement("div");
+  gal.className = "gallery";
+  gal.innerHTML = RECALL.photos.map((p, i) => `
+    <figure class="gallery__item">
+      <div class="gallery__frame" data-photo="${esc(p)}"><span class="gallery__cap">КАДР ${String(i+1).padStart(2,"0")}</span></div>
+      <figcaption class="gallery__cap">${esc(p)}.jpg</figcaption>
+    </figure>`).join("");
+  $(".tape", document.getElementById("timeline")).appendChild(gal);
+}
+
+/* --- викторина --- */
+const quizCard = $("#quizCard");
+const KEYS = ["A", "B", "C", "D"];
+let qi = 0, score = 0;
+
+function renderQuiz(){
+  if (qi < GIFT.quiz.length){
+    const item = GIFT.quiz[qi];
+    quizCard.innerHTML = `
+      <div class="term__bar">
+        <span>ВОПРОС ${qi + 1} / ${GIFT.quiz.length}</span>
+        <span style="display:flex;gap:.5rem;align-items:center"><span class="led led--amber led--blink"></span><span>ЗАПИСЬ</span></span>
+      </div>
+      <div class="term__body">
+        <p class="term__q">${esc(item.q)}</p>
+        <div class="term__opts"></div>
+        <p class="term__fb"></p>
+        <div class="term__foot"></div>
+      </div>`;
+    const opts = $(".term__opts", quizCard);
+    item.options.forEach((o, i) => {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.innerHTML = `<span class="opt__k">${KEYS[i]}</span><span>${esc(o)}</span>`;
+      b.addEventListener("click", () => answer(i));
+      opts.appendChild(b);
+    });
+  } else {
+    const perfect = score === GIFT.quiz.length;
+    quizCard.innerHTML = `
+      <div class="term__bar">
+        <span>ПРОВЕРКА ЗАВЕРШЕНА</span>
+        <span style="display:flex;gap:.5rem;align-items:center"><span class="led led--green"></span><span>ГРУЗ СЧИТАН</span></span>
+      </div>
+      <div class="term__body">
+        <div class="term__score">
+          <div class="big">${score} / ${GIFT.quiz.length}</div>
+          <p>${esc(perfect ? GIFT.quizOkText : GIFT.quizBadText)}</p>
+          <div class="term__acts">
+            <button class="btn btn--primary" id="toGift">Забрать подарок</button>
+            <button class="btn btn--ghost" id="retry">Ещё раз</button>
+          </div>
+        </div>
+      </div>`;
+    $("#toGift").addEventListener("click", () => {
+      $("#finale").scrollIntoView({ behavior: "smooth", block: "center" });
+      burst();
+    });
+    $("#retry").addEventListener("click", () => { qi = 0; score = 0; renderQuiz(); });
+  }
+}
+
+function answer(i){
+  const item = GIFT.quiz[qi];
+  const buttons = $$(".opt", quizCard);
+  buttons.forEach((b, k) => {
+    b.disabled = true;
+    if (k === item.answer) b.classList.add("is-right");
+    else if (k === i) b.classList.add("is-wrong");
+    else b.classList.add("is-dim");
+  });
+  const ok = i === item.answer;
+  if (ok) score++;
+  quizAnswered++;
+  updateGates();
+  const fb = $(".term__fb", quizCard);
+  fb.className = "term__fb " + (ok ? "is-ok" : "is-no");
+  fb.textContent = ok ? (item.ok || "Верно.") : "Не совсем. Правильный ответ: " + KEYS[item.answer] + ".";
+  const foot = $(".term__foot", quizCard);
+  foot.innerHTML = `<button class="btn btn--amber" id="nextQ">${qi + 1 < GIFT.quiz.length ? "Следующий вопрос" : "Результат"}</button>`;
+  $("#nextQ").addEventListener("click", () => { qi++; renderQuiz(); });
+}
+renderQuiz();
+
+/* --- конверт --- */
+const stage = $("#stage"), boot = $("#boot"), env = $("#env");
+
+function openFirstEnvelope(){
+  if (env.classList.contains("is-open")) return;
+  env.classList.add("is-open");
+  envelopeOpened = true;
+  updateGates();
+  document.body.classList.add("glitch");
+  setTimeout(() => document.body.classList.remove("glitch"), 600);
+  setTimeout(() => {
+    $("#envHint").textContent = "КОНВЕРТ ВСКРЫТ. ЛИСТАЙТЕ ВНИЗ.";
+    $("#letters").scrollIntoView({ behavior: "smooth" });
+  }, 1100);
+}
+
+$("#openBtn").addEventListener("click", () => {
+  boot.hidden = true;
+  stage.hidden = false;
+  window.scrollTo({ top: 0, behavior: "auto" });
+  updateActiveSection();
+  setTimeout(openFirstEnvelope, 800);
+});
+env.addEventListener("click", openFirstEnvelope);
+env.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFirstEnvelope(); } });
+
+/* вылетающие письма */
+const flights = $("#flights");
+GIFT.letters.forEach((_, i) => {
+  const f = document.createElement("span");
+  f.className = "fly";
+  f.style.setProperty("--i", i);
+  const spread = (i - (GIFT.letters.length - 1) / 2) * 44;
+  f.style.setProperty("--dx", `${spread}px`);
+  f.style.setProperty("--dy", `${-150 - Math.abs(spread) * 0.6}px`);
+  f.style.setProperty("--rot", `${(i % 2 ? 1 : -1) * (14 + i * 5)}deg`);
+  flights.appendChild(f);
+});
+
+/* --- финальная кассета --- */
+const cass = $("#cass");
+let cassOpened = false;
+function openCassette(){
+  if (cass.classList.contains("is-open")) return false;
+  cass.classList.add("is-open");
+  cassOpened = true;
+  setTimeout(() => burst(), 450);
+  return true;
+}
+cass.addEventListener("click", () => {
+  if (cass.classList.contains("is-open")) { burst(); return; }
+  openCassette();
+});
+cass.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cass.click(); } });
+
+/* купон открывается сам, когда до финала дошли */
+const finaleIO = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (en.isIntersecting && !cassOpened){
+      openCassette();
+      finaleIO.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.45 });
+finaleIO.observe($("#finale"));
+
+/* --- обрывки ленты вместо конфетти --- */
+const canvas = $("#confetti");
+const ctx = canvas.getContext("2d");
+let parts = [], raf = null;
+function resize(){
+  canvas.width = innerWidth * devicePixelRatio;
+  canvas.height = innerHeight * devicePixelRatio;
+  canvas.style.width = innerWidth + "px";
+  canvas.style.height = innerHeight + "px";
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+}
+addEventListener("resize", resize); resize();
+
+function burst(scale = 1){
+  const colors = ["#33FF00", "#FFB000", "#D2B48C", "#E8E0D0"];
+  const count = Math.max(20, Math.round(130 * scale));
+  parts = Array.from({ length: count }, () => ({
+    x: innerWidth / 2 + (Math.random() - 0.5) * 240,
+    y: innerHeight / 2 + (Math.random() - 0.5) * 60,
+    vx: (Math.random() - 0.5) * 12,
+    vy: -Math.random() * 13 - 4,
+    s: 6 + Math.random() * 10,
+    h: 3 + Math.random() * 5,
+    r: Math.random() * Math.PI,
+    vr: (Math.random() - 0.5) * 0.34,
+    c: colors[(Math.random() * colors.length) | 0]
+  }));
+  if (!raf) raf = requestAnimationFrame(tick);
+}
+function tick(){
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  parts.forEach((p) => {
+    p.vy += 0.32; p.x += p.vx; p.y += p.vy; p.vx *= 0.995; p.r += p.vr;
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+    ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.h / 2, p.s, p.h);
+    ctx.restore();
+  });
+  parts = parts.filter((p) => p.y < innerHeight + 40);
+  if (parts.length) raf = requestAnimationFrame(tick);
+  else { ctx.clearRect(0, 0, innerWidth, innerHeight); raf = null; }
+}
+
+/* --- музыка (появится, если рядом лежит music.mp3) --- */
+const musicBtn = $("#musicBtn");
+const audio = new Audio("music.mp3");
+audio.loop = true; audio.volume = 0.45;
+let musicOn = false;
+audio.addEventListener("canplaythrough", () => { musicBtn.hidden = false; });
+audio.addEventListener("error", () => { musicBtn.hidden = true; });
+audio.load();
+musicBtn.addEventListener("click", () => {
+  musicOn = !musicOn;
+  musicBtn.classList.toggle("is-off", !musicOn);
+  musicBtn.textContent = musicOn ? "♫" : "♪";
+  if (musicOn) audio.play().catch(() => { musicOn = false; musicBtn.classList.add("is-off"); musicBtn.textContent = "♪"; });
+  else audio.pause();
+});
+
+/* --- пыль в воздухе --- */
+const dust = $("#dust");
+const dctx = dust.getContext("2d");
+let motes = [], dustRaf = null;
+function sizeDust(){
+  dust.width = innerWidth * devicePixelRatio;
+  dust.height = innerHeight * devicePixelRatio;
+  dctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+}
+function seedDust(){
+  motes = Array.from({ length: 46 }, () => ({
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight,
+    r: Math.random() * 1.6 + .4,
+    vx: (Math.random() - .5) * .12,
+    vy: -(Math.random() * .18 + .04),
+    a: Math.random() * .45 + .12,
+    tw: Math.random() * Math.PI * 2
+  }));
+}
+function dustTick(){
+  dctx.clearRect(0, 0, innerWidth, innerHeight);
+  motes.forEach(m => {
+    m.x += m.vx; m.y += m.vy; m.tw += .02;
+    if (m.y < -10){ m.y = innerHeight + 10; m.x = Math.random() * innerWidth; }
+    if (m.x < -10) m.x = innerWidth + 10;
+    if (m.x > innerWidth + 10) m.x = -10;
+    const a = m.a * (.6 + .4 * Math.sin(m.tw));
+    dctx.beginPath();
+    dctx.fillStyle = `rgba(51,255,0,${a})`;
+    dctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+    dctx.fill();
+  });
+  dustRaf = requestAnimationFrame(dustTick);
+}
+function startDust(){
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  sizeDust(); seedDust();
+  if (!dustRaf) dustRaf = requestAnimationFrame(dustTick);
+}
+addEventListener("resize", () => { sizeDust(); seedDust(); });
+startDust();
+
+/* ================================================================
+   ЭТАПЫ: пока этап не пройден — на следующий нельзя
+   ================================================================ */
+const STAGES = GIFT.stages || {};
+const lettersRead = new Set();
+let quizAnswered = 0;
+let envelopeOpened = false;
+let secretUnlocked = false;
+let secretTries = 0;
+
+const LOCK_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+
+const GATE_LIST = [
+  { id: "letters",  title: "ПИСЬМА",   need: STAGES.letters?.need  || "ВСКРЫТЬ КОНВЕРТ",
+    cur: () => (envelopeOpened ? 1 : 0), total: () => 1 },
+  { id: "timeline", title: "ВСПОМНИ", need: STAGES.timeline?.need || "ПРОЧИТАТЬ ВСЕ ПИСЬМА",
+    cur: () => lettersRead.size, total: () => GIFT.letters.length },
+  { id: "quiz",     title: "ПРОВЕРКА", need: STAGES.quiz?.need     || "ЗАПИСАТЬ МОМЕНТ НА ЛЕНТУ",
+    cur: () => (memories.length ? 1 : 0), total: () => 1 },
+  { id: "finale",   title: "ПОДАРОК", need: STAGES.finale?.need   || "ОТВЕТИТЬ НА ВСЕ ВОПРОСЫ",
+    cur: () => quizAnswered, total: () => GIFT.quiz.length },
+  { id: "secret",   title: "СЕКРЕТ",   need: STAGES.secret?.need   || "ПОЦЕЛОВАТЬ И НАЗВАТЬ КОД",
+    kind: "code", cur: () => (secretUnlocked ? 1 : 0), total: () => 1 }
+];
+
+const gateState = {};
+
+function flashHud(){
+  const hud = document.querySelector(".hud");
+  if (!hud) return;
+  hud.classList.remove("flash-ok");
+  void hud.offsetWidth;
+  hud.classList.add("flash-ok");
+}
+
+/* проверка секретного кода */
+function wireSecret(lock){
+  const form = $(".lock__form", lock);
+  const input = $(".lock__input", lock);
+  const msg = $(".lock__msg", lock);
+  const box = $(".lock__box", lock);
+  if (!form) return;
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const given = (input.value || "").trim().toLowerCase();
+    const right = String(SECRET.code || "").trim().toLowerCase();
+    if (right && given === right){
+      secretUnlocked = true;
+      msg.className = "lock__msg is-ok";
+      msg.textContent = "КОД ПРИНЯТ. ДОСТУП РАЗРЕШЁН.";
+      input.value = "";
+      input.disabled = true;
+      setTimeout(() => {
+        updateGates();
+        setTimeout(() => revealSecret(), 500);
+      }, 1100);
+    } else {
+      secretTries++;
+      msg.className = "lock__msg is-err";
+      msg.textContent = "КОД НЕВЕРНЫЙ.";
+      box.classList.remove("is-shake"); void box.offsetWidth; box.classList.add("is-shake");
+      if (secretTries >= 2) msg.textContent = "КОД НЕВЕРНЫЙ. Спроси его ещё раз.";
+      input.select();
+    }
+  });
+}
+
+/* текст секрета «считывается» и падает конфетти */
+function revealSecret(){
+  const el = $("#secretText");
+  if (!el) return;
+  const text = SECRET.text || "";
+  const glyphs = "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя0123456789/#@";
+  el.classList.add("is-decoding");
+  const t0 = performance.now();
+  const dur = 1400;
+  const tick = () => {
+    const p = Math.min(1, (performance.now() - t0) / dur);
+    const keep = Math.floor(p * text.length);
+    let out = "";
+    for (let i = 0; i < text.length; i++){
+      out += i < keep ? text[i] : glyphs[(Math.random() * glyphs.length) | 0];
+    }
+    el.textContent = out;
+    if (p < 1) setTimeout(tick, 32);
+    else { el.textContent = text; el.classList.remove("is-decoding"); burst(0.7); }
+  };
+  setTimeout(tick, 32);
+}
+
+function updateGates(){
+  GATE_LIST.forEach((g) => {
+    const lock = $(`[data-lock="${g.id}"]`);
+    const gate = $(`[data-gate="${g.id}"]`);
+    if (!lock || !gate) return;
+
+    const total = g.total();
+    const cur = Math.min(g.cur(), total);
+    const done = cur >= total;
+    const wasOpen = gateState[g.id];
+
+    if (!done){
+      if (!lock.dataset.built){
+        lock.dataset.built = "1";
+        const segs = Array.from({ length: total }, () => '<span class="lock__seg"></span>').join("");
+        const teaser = ($("#" + g.id + " .sec-head h2") || {}).textContent || g.title;
+        const codeForm = g.kind === "code" ? `
+          <form class="lock__form" autocomplete="off">
+            <input class="lock__input" type="text" maxlength="16" placeholder="КОД" aria-label="Код" spellcheck="false">
+            <button class="btn btn--amber btn--sm" type="submit">Назвать код</button>
+          </form>
+          <p class="lock__msg" role="status"></p>` : "";
+        lock.innerHTML = `
+          <div class="lock__box">
+            <span class="lock__ico">${LOCK_SVG}</span>
+            <div class="lock__info">
+              <p class="lock__title">ЭТАП ЗАКРЫТ · ${g.title}</p>
+              <p class="lock__teaser">${esc(teaser)}</p>
+              <p class="lock__req">НУЖНО: ${g.need}</p>
+              ${codeForm}
+            </div>
+            <div class="lock__bar">${segs}<span class="lock__count"></span></div>
+          </div>`;
+        if (g.kind === "code") wireSecret(lock);
+      }
+      lock.hidden = false;
+      lock.classList.remove("is-open");
+      lock.style.pointerEvents = "";
+      gate.style.display = "none";
+      $$(".lock__seg", lock).forEach((s, i) => s.classList.toggle("is-on", i < cur));
+      const cnt = $(".lock__count", lock);
+      if (cnt) cnt.textContent = `${cur} / ${total}`;
+      gateState[g.id] = false;
+    } else {
+      if (wasOpen === false){
+        lock.classList.add("is-open");
+        lock.style.pointerEvents = "none";
+        setTimeout(() => { lock.hidden = true; lock.classList.remove("is-open"); lock.style.pointerEvents = ""; }, 460);
+        gate.style.display = "";
+        gate.classList.remove("is-new"); void gate.offsetWidth; gate.classList.add("is-new");
+        flashHud();
+      } else {
+        lock.hidden = true;
+        gate.style.display = "";
+      }
+      gateState[g.id] = true;
+    }
+  });
+}
+updateGates();
+
+/* --- фото (грузим, когда блок реально виден) --- */
+const photoIO = new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (en.isIntersecting) { mountPhoto(en.target); photoIO.unobserve(en.target); }
+  });
+}, { rootMargin: "200px" });
+$$("[data-photo]").forEach((el) => photoIO.observe(el));
+</script>
+</body>
+</html>
